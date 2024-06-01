@@ -10,7 +10,8 @@ use GraphQL\Type\Schema;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-$db = Database::getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
 $schema = new Schema([
     'query' => new QueryType(),

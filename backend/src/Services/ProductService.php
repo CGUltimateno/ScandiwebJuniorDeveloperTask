@@ -28,6 +28,9 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
+            $data['attributes_id'],
+            $data['gallery_id'],
+            $data['prices_id'],
             $data['brand']
         );
         $this->productRepository->save($product);
@@ -40,6 +43,9 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
+            $data['attributes_id'],
+            $data['gallery_id'],
+            $data['prices_id'],
             $data['brand']
         );
         $this->productRepository->update($product);

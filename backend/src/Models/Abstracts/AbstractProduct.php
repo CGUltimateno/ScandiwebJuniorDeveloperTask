@@ -8,14 +8,20 @@ abstract class AbstractProduct {
     protected $inStock;
     protected $description;
     protected $categoryId;
+    protected $attributesId;
+    protected $galleryId;
+    protected $pricesId;
     protected $brand;
 
-    public function __construct($id, $name, $inStock, $description, $categoryId, $brand) {
+    public function __construct($id, $name, $inStock, $description, $categoryId, $attributesId, $galleryId, $pricesId, $brand) {
         $this->id = $id;
         $this->name = $name;
         $this->inStock = $inStock;
         $this->description = $description;
         $this->categoryId = $categoryId;
+        $this->attributesId = $attributesId;
+        $this->galleryId = $galleryId;
+        $this->pricesId = $pricesId;
         $this->brand = $brand;
     }
 
