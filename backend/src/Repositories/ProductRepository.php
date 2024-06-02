@@ -10,12 +10,13 @@ class ProductRepository implements RepositoryInterface {
     private $db;
 
     public function __construct() {
-        $this->db = (new Database())->getConnection();
-    }
+            $this->db = (new Database())->getConnection();
+        }
 
     public function findAll() {
-        $stmt = $this->db->query("SELECT * FROM products");
-        return $stmt->fetchAll();
+            $stmt = $this->db->query("SELECT * FROM products");
+            $results = $stmt->fetchAll();
+            return $results;
     }
 
     public function findById($id) {
@@ -25,30 +26,26 @@ class ProductRepository implements RepositoryInterface {
     }
 
     public function save($product) {
-        $stmt = $this->db->prepare("INSERT INTO products (id, name, in_stock, description, category_id, attributes_id, gallery_id, prices_id brand) VALUES (:id, :name, :in_stock, :description, :category_id, :attributes_id, :gallery_id, :prices:id, :brand)");
+        $stmt = $this->db->prepare("INSERT INTO products (id, name, in_stock, description, category_id, prices_id brand) VALUES (:id, :name, :in_stock, :description, :category_id, :prices:id, :brand)");
         $stmt->execute([
             'id' => $product->id,
             'name' => $product->name,
             'in_stock' => $product->inStock,
             'description' => $product->description,
             'category_id' => $product->categoryId,
-            'attributes_id' => $product->attributesId,
-            'gallery_id' => $product->galleryId,
             'prices_id' => $product->pricesId,
             'brand' => $product->brand
         ]);
     }
 
     public function update($product) {
-        $stmt = $this->db->prepare("UPDATE products SET name = :name, in_stock = :in_stock, description = :description, category_id = :category_id, attributes_id = :attributes_id, gallery_id = :gallery_id, prices_id = :prices_id, brand = :brand WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE products SET name = :name, in_stock = :in_stock, description = :description, category_id = :category_id, prices_id = :prices_id, brand = :brand WHERE id = :id");
         $stmt->execute([
             'id' => $product->id,
             'name' => $product->name,
             'in_stock' => $product->inStock,
             'description' => $product->description,
             'category_id' => $product->categoryId,
-            'attributes_id' => $product->attributesId,
-            'gallery_id' => $product->galleryId,
             'prices_id' => $product->pricesId,
             'brand' => $product->brand
         ]);

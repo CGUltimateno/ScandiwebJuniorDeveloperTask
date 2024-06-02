@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\AttributeItem;
-use App\Repositories\AttributeItemRepository;
+use App\Repositories\AttributesItemRepository;
 use App\config\Database;
 class AttributesItemService
 {
     private $attributesItemRepository;
 
-    public function __construct(AttributeItemRepository $attributesItemRepository) {
+    public function __construct(AttributesItemRepository $attributesItemRepository) {
         $this->attributesItemRepository = $attributesItemRepository;
     }
 

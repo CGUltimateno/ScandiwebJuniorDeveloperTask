@@ -3,10 +3,10 @@
 namespace App\Models\Abstracts;
 
 abstract class AbstractCategory {
-    protected $id;
-    protected $name;
+    protected int $id;
+    protected string $name;
 
-    public function __construct($id, $name) {
+    public function __construct(int $id, string $name) {
         $this->id = $id;
         $this->name = $name;
     }

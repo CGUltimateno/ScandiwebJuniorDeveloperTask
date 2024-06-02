@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 
+use App\GraphQL\Types\CategoryType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\GraphQL as GraphQLBase;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
 use App\GraphQL\Queries\QueryType;
@@ -34,7 +36,6 @@ class GraphQL {
             $schema = new Schema(
                 (new SchemaConfig())
                 ->setQuery($queryType)
-                ->setMutation($mutationType)
             );
 
             $rawInput = file_get_contents('php://input');
@@ -45,8 +46,8 @@ class GraphQL {
             $input = json_decode($rawInput, true);
             $query = $input['query'];
             $variableValues = $input['variables'] ?? null;
-
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
+            error_log(print_r($result, true), 3, 'C:\Users\moham\Desktop\error.log');
             $output = $result->toArray();
         } catch (Throwable $e) {
             $output = [

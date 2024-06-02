@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Product;
+use App\Models\Products\Product;
 use App\Repositories\ProductRepository;
 use App\Services\Interfaces\ProductServiceInterface;
 
@@ -28,8 +28,6 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
-            $data['attributes_id'],
-            $data['gallery_id'],
             $data['prices_id'],
             $data['brand']
         );
@@ -43,8 +41,6 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
-            $data['attributes_id'],
-            $data['gallery_id'],
             $data['prices_id'],
             $data['brand']
         );

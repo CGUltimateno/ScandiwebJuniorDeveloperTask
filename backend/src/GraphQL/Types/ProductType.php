@@ -1,5 +1,7 @@
 <?php
 
+namespace App\GraphQL\Types;
+
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -13,8 +15,6 @@ class ProductType extends ObjectType {
                 'in_stock' => Type::boolean(),
                 'description' => Type::string(),
                 'category_id' => Type::int(),
-                'attributes_id' => Type::int(),
-                'gallery_id' => Type::int(),
                 'prices_id' => Type::int(),
                 'brand' => Type::string()
             ]

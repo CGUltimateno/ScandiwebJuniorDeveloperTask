@@ -1,5 +1,6 @@
 <?php
 
+namespace App\GraphQL\Types;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -12,7 +13,6 @@ class AttributeType extends ObjectType {
                 'name' => Type::string(),
                 'type' => Type::string(),
                 'product_id' => Type::string(),
-                'attribute_item_id' => Type::int()
             ]
         ];
         parent::__construct($config);

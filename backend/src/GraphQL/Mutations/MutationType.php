@@ -4,12 +4,12 @@ namespace App\GraphQL\Mutations;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\ProductType;
 use App\GraphQL\Types\CategoryType;
 use App\GraphQL\Types\AttributeType;
 use App\GraphQL\Types\GalleryType;
 use App\GraphQL\Types\PriceType;
 use App\GraphQL\Types\CurrencyType;
+use App\GraphQL\Types\ProductType;
 
 class MutationType extends ObjectType {
     public function __construct($productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService) {

@@ -6,7 +6,7 @@ use App\config\Database;
 use App\Repositories\RepositoryInterface;
 use App\Models\AttributeItem;
 
-class AttributeItemRepository implements RepositoryInterface
+class AttributesItemRepository implements RepositoryInterface
 {
     private $db;
 

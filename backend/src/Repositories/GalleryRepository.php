@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\RepositoryInterface;
-use App\Database\Database;
+use App\config\Database;
 use App\Models\Gallery;
 
 class GalleryRepository implements RepositoryInterface
