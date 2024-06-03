@@ -1,0 +1,40 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .nav-link {
+    color: gray;
+    text-decoration: none;
+  }
+  
+  .nav-link.active {
+    color: green;
+  }
+  
+  .cart-container {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .currency-btn, .cart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: gray;
+  }
+  
+  .currency-btn {
+    color: green;
+  }
+  

@@ -13,11 +13,12 @@ use App\GraphQL\Types\ProductType;
 
 class MutationType extends ObjectType {
     public function __construct($productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService) {
+        $productType = new ProductType();
         $config = [
             'name' => 'Mutation',
             'fields' => [
                 'createProduct' => [
-                    'type' => new ProductType(),
+                    'type' => $productType,
                     'args' => [
                         'id' => Type::nonNull(Type::string()),
                         'name' => Type::nonNull(Type::string()),
@@ -34,7 +35,7 @@ class MutationType extends ObjectType {
                     }
                 ],
                 'updateProduct' => [
-                    'type' => new ProductType(),
+                    'type' =>  $productType,
                     'args' => [
                         'id' => Type::nonNull(Type::string()),
                         'name' => Type::nonNull(Type::string()),
