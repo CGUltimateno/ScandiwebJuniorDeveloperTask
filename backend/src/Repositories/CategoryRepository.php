@@ -29,6 +29,8 @@ class CategoryRepository implements RepositoryInterface
     public function save($category) {
         $stmt = $this->db->prepare("INSERT INTO categories (name) VALUES (:name)");
         $stmt->execute(['name' => $category->name]);
+        $category->id = $this->db->lastInsertId();
+        return $category;
     }
 
     public function update($category) {

@@ -7,7 +7,7 @@ use App\Repositories\CategoryRepository;
 use App\Services\Interfaces\CategoryServiceInterface;
 
 class CategoryService implements CategoryServiceInterface {
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
 
     public function __construct(CategoryRepository $categoryRepository) {
         $this->categoryRepository = $categoryRepository;

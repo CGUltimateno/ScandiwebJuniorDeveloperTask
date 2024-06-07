@@ -6,7 +6,7 @@ use App\Models\Currencies;
 use App\Repositories\CurrencyRepository;
 
 class CurrencyService {
-    private $currencyRepository;
+    private CurrencyRepository $currencyRepository;
 
     public function __construct(CurrencyRepository $currencyRepository) {
         $this->currencyRepository = $currencyRepository;

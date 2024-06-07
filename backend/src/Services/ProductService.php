@@ -7,7 +7,7 @@ use App\Repositories\ProductRepository;
 use App\Services\Interfaces\ProductServiceInterface;
 
 class ProductService implements ProductServiceInterface {
-    private $productRepository;
+    private ProductRepository $productRepository;
 
     public function __construct(ProductRepository $productRepository) {
         $this->productRepository = $productRepository;
@@ -28,10 +28,10 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
-            $data['prices_id'],
             $data['brand']
         );
         $this->productRepository->save($product);
+        return $product;
     }
 
     public function updateProduct($id, $data) {
@@ -41,7 +41,6 @@ class ProductService implements ProductServiceInterface {
             $data['in_stock'],
             $data['description'],
             $data['category_id'],
-            $data['prices_id'],
             $data['brand']
         );
         $this->productRepository->update($product);

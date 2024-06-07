@@ -6,7 +6,7 @@ use App\Models\Price;
 use App\Repositories\PriceRepository;
 
 class PriceService {
-    private $priceRepository;
+    private PriceRepository $priceRepository;
 
     public function __construct(PriceRepository $priceRepository) {
         $this->priceRepository = $priceRepository;

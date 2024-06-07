@@ -2,62 +2,42 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Order;
+use App\Models\OrderItem;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\CategoryType;
-use App\GraphQL\Types\AttributeType;
-use App\GraphQL\Types\GalleryType;
-use App\GraphQL\Types\PriceType;
-use App\GraphQL\Types\CurrencyType;
-use App\GraphQL\Types\ProductType;
+use App\GraphQL\Types\OrderType;
+use App\GraphQL\Types\OrderItemType;
+use App\Services\OrderService;
+use App\Services\OrderItemService;
 
 class MutationType extends ObjectType {
-    public function __construct($productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService) {
-        $productType = new ProductType();
+    public function __construct(OrderService $orderService, OrderItemService $orderItemService, OrderType $orderType, OrderItemType $orderItemType) {
         $config = [
             'name' => 'Mutation',
             'fields' => [
-                'createProduct' => [
-                    'type' => $productType,
+                'createOrder' => [
+                    'type' => $orderType,
                     'args' => [
-                        'id' => Type::nonNull(Type::string()),
-                        'name' => Type::nonNull(Type::string()),
-                        'in_stock' => Type::nonNull(Type::boolean()),
-                        'description' => Type::nonNull(Type::string()),
-                        'category_id' => Type::nonNull(Type::int()),
-                        'attributes_id' => Type::nonNull(Type::int()),
-                        'gallery_id' => Type::nonNull(Type::int()),
-                        'prices_id' => Type::nonNull(Type::int()),
-                        'brand' => Type::nonNull(Type::string())
+                        'total' => Type::nonNull(Type::float()),
                     ],
-                    'resolve' => function($root, $args) use ($productService) {
-                        return $productService->createProduct($args);
+                    'resolve' => function($root, $args) use ($orderService) {
+                        $order = new Order(null, $args['total'], null, null);
+                        return $orderService->createOrder($order);
                     }
                 ],
-                'updateProduct' => [
-                    'type' =>  $productType,
+                'createOrderItem' => [
+                    'type' => $orderItemType,
                     'args' => [
-                        'id' => Type::nonNull(Type::string()),
-                        'name' => Type::nonNull(Type::string()),
-                        'in_stock' => Type::nonNull(Type::boolean()),
-                        'description' => Type::string(),
-                        'category_id' => Type::nonNull(Type::int()),
-                        'brand' => Type::string()
+                        'order_id' => Type::nonNull(Type::int()),
+                        'product_id' => Type::nonNull(Type::string()),
+                        'quantity' => Type::nonNull(Type::int()),
                     ],
-                    'resolve' => function($root, $args) use ($productService) {
-                        return $productService->updateProduct($args['id'], $args);
+                    'resolve' => function($root, $args) use ($orderItemService) {
+                        $orderItem = new OrderItem(null, $args['order_id'], $args['product_id'], $args['quantity']);
+                        return $orderItemService->createOrderItem($orderItem);
                     }
                 ],
-                'deleteProduct' => [
-                    'type' => Type::boolean(),
-                    'args' => [
-                        'id' => Type::nonNull(Type::string())
-                    ],
-                    'resolve' => function($root, $args) use ($productService) {
-                        return $productService->deleteProduct($args['id']);
-                    }
-                ],
-                // TO-DO: Add similar fields for creating, updating, and deleting Categories, Attributes, Gallery, Prices, and Currencies
             ]
         ];
         parent::__construct($config);

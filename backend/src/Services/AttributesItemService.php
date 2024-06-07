@@ -7,7 +7,7 @@ use App\Repositories\AttributesItemRepository;
 use App\config\Database;
 class AttributesItemService
 {
-    private $attributesItemRepository;
+    private AttributesItemRepository $attributesItemRepository;
 
     public function __construct(AttributesItemRepository $attributesItemRepository) {
         $this->attributesItemRepository = $attributesItemRepository;

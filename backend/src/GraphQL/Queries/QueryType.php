@@ -1,6 +1,8 @@
 <?php
 namespace App\GraphQL\Queries;
 
+use App\GraphQL\Types\OrderItemType;
+use App\GraphQL\Types\OrderType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use App\GraphQL\Types\CategoryType;
@@ -12,8 +14,7 @@ use App\GraphQL\Types\ProductType;
 use Throwable;
 
 class QueryType extends ObjectType {
-    public function __construct($productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService) {
-        $productType = new ProductType();
+    public function __construct($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService) {
 
         $config = [
             'name' => 'Query',
@@ -61,6 +62,27 @@ class QueryType extends ObjectType {
                     'type' => Type::listOf(new CurrencyType()),
                     'resolve' => function() use ($currencyService) {
                         return $currencyService->getAllCurrencies();
+                    }
+                ],
+                'orders' => [
+                    'type' => Type::listOf($orderType),
+                    'resolve' => function() use ($orderService) {
+                        return $orderService->getAllOrders();
+                    }
+                ],
+                'order' => [
+                    'type' => $orderType,
+                    'args' => [
+                        'id' => Type::nonNull(Type::int()),
+                    ],
+                    'resolve' => function($root, $args) use ($orderService) {
+                        return $orderService->getOrderById($args['id']);
+                    }
+                ],
+                'orderItems' => [
+                    'type' => Type::listOf($orderItemType),
+                    'resolve' => function() use ($orderItemService) {
+                        return $orderItemService->getAllOrderItems();
                     }
                 ],
             ]

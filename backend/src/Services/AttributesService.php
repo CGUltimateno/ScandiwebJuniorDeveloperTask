@@ -7,7 +7,7 @@ use App\Repositories\AttributesRepository;
 use App\Services\Interfaces\AttributeServiceInterface;
 
 class AttributesService implements AttributeServiceInterface {
-    private $attributeRepository;
+    private AttributesRepository $attributeRepository;
 
     public function __construct(AttributesRepository $attributeRepository) {
         $this->attributeRepository = $attributeRepository;

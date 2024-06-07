@@ -6,7 +6,7 @@ use App\Models\Gallery;
 use App\Repositories\GalleryRepository;
 
 class GalleryService {
-    private $galleryRepository;
+    private GalleryRepository $galleryRepository;
 
     public function __construct(GalleryRepository $galleryRepository) {
         $this->galleryRepository = $galleryRepository;
