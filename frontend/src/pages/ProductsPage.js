@@ -5,10 +5,11 @@ import './ProductsPage.css';
 
 class ProductsPage extends React.Component {
   render() {
+    const { categoryId } = this.props.match.params;
     return (
       <div className="products-page">
         <h1 className="title">Women</h1>
-        <Query query={GET_PRODUCTS}>
+        <Query query={GET_PRODUCTS} variables={{ categoryId }}>
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error :(</p>;

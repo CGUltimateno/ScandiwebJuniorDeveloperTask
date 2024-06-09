@@ -10,8 +10,9 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
+  query GetProducts($categoryId: ID!) {
+    category(id: $categoryId) {
+      products {
         id
         name
         price
@@ -21,3 +22,29 @@ export const GET_PRODUCTS = gql`
     }
   }
 `;
+
+export const GET_PRODUCT = gql`
+  query GetProduct($id: ID!) {
+    product(id: $id) {
+        id
+        name
+        prices {
+          currency
+          amount
+        }
+        inStock
+        gallery
+        description
+        attributes {
+          id
+          name
+          type
+          items {
+            displayValue
+            value
+          }
+        }
+      }
+  }
+`;
+
