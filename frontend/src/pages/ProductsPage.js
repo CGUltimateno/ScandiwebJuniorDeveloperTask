@@ -1,37 +1,28 @@
 import React from 'react';
-import { Query } from '@apollo/client/react/components';
-import { GET_PRODUCTS } from '../graphql/queries';
+import { useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
+import { GET_CATEGORIES } from '../graphql/queries';
+import ProductList from '../components/product/ProductList';
 
-class ProductsPage extends React.Component {
-  render() {
+const ProductsPage = () => {
+  const { categoryId } = useParams();
+  const { loading, error, data } = useQuery(GET_CATEGORIES);
 
-    return (
-      <div className="products-page">
-        <h1>Women</h1>
-        <Query query={GET_PRODUCTS}>
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error :(</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
-            return (
-              <div className="products-grid">
-                {data.products.map((product) => (
-                  <div key={product.id} className="product-card">
-                    <img src={product.gallery[0]} alt={product.name} />
-                    <h2>{product.name}</h2>
-                    <p>${product.price}</p>
-                    <button>
-                      Add to Cart
-                    </button>
-                  </div>
-                ))}
-              </div>
-            );
-          }}
-        </Query>
+  const category = data.categories.find(category => category.id === Number(categoryId));
+  console.log(categoryId)
+  console.log(data.categories)
+  const categoryName = category ? category.name.charAt(0).toUpperCase() + category.name.slice(1) : 'All Products';
+  console.log(categoryName)
+
+  return (
+      <div>
+        <h2>{categoryName}</h2>
+        <ProductList />
       </div>
-    );
-  }
+  );
 }
 
-export default (ProductsPage);
+export default ProductsPage;

@@ -3,8 +3,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .nav {
@@ -16,7 +14,11 @@
     color: gray;
     text-decoration: none;
   }
-  
+
+.active-link {
+  text-decoration: underline;
+  color: #00DF80;
+}
   .nav-link.active {
     color: green;
   }
