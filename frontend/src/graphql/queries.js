@@ -20,28 +20,34 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
-export const GET_PRODUCT = gql`
-  query GetProduct($id: ID!) {
-    product(id: $id) {
+export const GET_GALLERY_IMAGES = gql`
+    query GetGalleryImages {
+        galleries {
         id
-        name
-        prices {
-          currency
-          amount
+        product_id
+        image_url
         }
-        inStock
-        gallery
-        description
-        attributes {
-          id
-          name
-          type
-          items {
-            displayValue
-            value
-          }
-        }
-      }
-  }
-`;
+    }
+    `;
 
+
+export const GET_PRICES = gql`
+    query GetPrices {
+        prices {
+        id
+        product_id
+        amount
+        currency_id
+        }
+    }
+    `;
+
+export const GET_CURRENCY = gql`
+    query GetCurrency {
+        currencies {
+        id
+        label
+        symbol
+        }
+    }
+    `;

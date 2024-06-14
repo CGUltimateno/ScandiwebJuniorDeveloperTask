@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { GET_CATEGORIES } from '../graphql/queries';
 import ProductList from '../components/product/ProductList';
-
+import './ProductsPage.css';
 const ProductsPage = () => {
   const { categoryId } = useParams();
   const { loading, error, data } = useQuery(GET_CATEGORIES);
@@ -19,7 +19,7 @@ const ProductsPage = () => {
 
   return (
       <div>
-        <h2>{categoryName}</h2>
+        <h2 className="h2">{categoryName}</h2>
         <ProductList />
       </div>
   );

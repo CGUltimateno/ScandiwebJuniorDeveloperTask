@@ -5,6 +5,9 @@ import { useDispatch } from 'react-redux';
 import { setCategories } from '../../redux/reducers/categorySlice';
 import { GET_CATEGORIES } from '../../graphql/queries';
 import './Header.css';
+import logo from './logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
     const dispatch = useDispatch();
@@ -41,10 +44,14 @@ const Header = () => {
                 ))}
             </nav>
             <div className='logo-container'>
-                <img src="https://www.adidas.co.uk/glass/react/1.0.0/assets/logo.svg" alt="Adidas logo" className="logo" />
+                <Link to='/1'>
+                    <img src={logo} alt='logo' className="logo"/>
+                </Link>
             </div>
             <div className="cart-container">
-                <button className="cart-btn">Cart</button>
+                <button className="cart-btn">
+                    <FontAwesomeIcon icon={faShoppingCart}/>
+                </button>
             </div>
         </header>
     );
