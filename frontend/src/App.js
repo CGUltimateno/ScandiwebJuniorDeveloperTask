@@ -6,7 +6,7 @@ import client from './apolloClient';
 import store from './redux/store';
 import Header from './components/layout/Header';
 import ProductsPage from './pages/ProductsPage';
-import ProductList from "./components/product/ProductList";
+import ProductDetails from './pages/ProductDetails';
 
 class App extends React.Component {
     render() {
@@ -16,7 +16,9 @@ class App extends React.Component {
                     <Router>
                         <Header />
                         <Routes>
+                            <Route path="/" element={<ProductsPage />} />
                             <Route path="/:categoryId" element={<ProductsPage />} />
+                            <Route path="/product/:productId" element={<ProductDetails />} />
                         </Routes>
                     </Router>
                 </Provider>

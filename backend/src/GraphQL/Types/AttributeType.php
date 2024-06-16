@@ -9,7 +9,7 @@ class AttributeType extends ObjectType {
         $config = [
             'name' => 'Attribute',
             'fields' => [
-                'id' => Type::int(),
+                'id' => Type::string(),
                 'name' => Type::string(),
                 'type' => Type::string(),
                 'product_id' => Type::string(),

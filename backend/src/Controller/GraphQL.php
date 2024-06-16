@@ -6,6 +6,7 @@ use App\GraphQL\Types\CategoryType;
 use App\GraphQL\Types\OrderItemType;
 use App\GraphQL\Types\OrderType;
 use App\GraphQL\Types\ProductType;
+use App\Repositories\AttributesItemRepository;
 use App\Repositories\AttributesRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CurrencyRepository;
@@ -24,6 +25,7 @@ use App\GraphQL\Mutations\MutationType;
 use App\Services\ProductService;
 use App\Services\CategoryService;
 use App\Services\AttributesService;
+use App\Services\AttributesItemService;
 use App\Services\GalleryService;
 use App\Services\PriceService;
 use App\Services\CurrencyService;
@@ -38,6 +40,7 @@ class GraphQL {
             $productService = new ProductService(new ProductRepository());
             $categoryService = new CategoryService(new CategoryRepository());
             $attributeService = new AttributesService(new AttributesRepository());
+            $attributeItemsService = new AttributesItemService(new AttributesItemRepository());
             $galleryService = new GalleryService(new GalleryRepository());
             $priceService = new PriceService(new PriceRepository());
             $currencyService = new CurrencyService(new CurrencyRepository());
@@ -47,7 +50,7 @@ class GraphQL {
             $orderType = new OrderType();
             $orderItemType = new OrderItemType();
 
-            $queryType = new QueryType($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService);
+            $queryType = new QueryType($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $attributeItemsService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService);
             $mutationType = new MutationType($orderService, $orderItemService, $orderType, $orderItemType);
 
             $schema = new Schema(
@@ -61,24 +64,24 @@ class GraphQL {
                 throw new RuntimeException('Failed to get php://input');
             }
 
-            error_log("Raw input: " . $rawInput, 3, 'C:\Users\moham\Desktop\error.log');
+            error_log("Raw input: " . $rawInput, 3, 'error.log');
 
             $input = json_decode($rawInput, true);
-            error_log("Decoded input: " . print_r($input, true), 3, 'C:\Users\moham\Desktop\error.log');
+            error_log("Decoded input: " . print_r($input, true), 3, 'error.log');
 
             $query = $input['query'];
             $variableValues = $input['variables'] ?? null;
 
-            error_log("Query: " . $query, 3, 'C:\Users\moham\Desktop\error.log');
-            error_log("Variable values: " . print_r($variableValues, true), 3, 'C:\Users\moham\Desktop\error.log');
+            error_log("Query: " . $query, 3, 'error.log');
+            error_log("Variable values: " . print_r($variableValues, true), 3, 'error.log');
 
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
-            error_log("Execution result: " . print_r($result, true), 3, 'C:\Users\moham\Desktop\error.log');
+            error_log("Execution result: " . print_r($result, true), 3, 'error.log');
 
             $output = $result->toArray();
         } catch (Throwable $e) {
-            error_log('GraphQL Error: ' . $e->getMessage(), 3, 'C:\Users\moham\Desktop\error.log');
-            error_log('Stack trace: ' . $e->getTraceAsString(), 3, 'C:\Users\moham\Desktop\error.log');
+            error_log('GraphQL Error: ' . $e->getMessage(), 3, 'error.log');
+            error_log('Stack trace: ' . $e->getTraceAsString(), 3, 'error.log');
             $output = [
                 'error' => [
                     'message' => $e->getMessage(),

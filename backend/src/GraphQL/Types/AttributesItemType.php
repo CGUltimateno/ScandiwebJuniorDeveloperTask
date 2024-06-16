@@ -11,8 +11,9 @@ class AttributesItemType extends ObjectType
         $config = [
             'name' => 'AttributesItem',
             'fields' => [
-                'id' => Type::int(),
-                'attribute_id' => Type::int(),
+                'id' => Type::string(),
+                'attribute_id' => Type::string(),
+                'product_id' => Type::string(),
                 'display_value' => Type::string(),
                 'value' => Type::string()
             ]

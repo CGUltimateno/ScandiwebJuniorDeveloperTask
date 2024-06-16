@@ -1,6 +1,7 @@
 <?php
 namespace App\GraphQL\Queries;
 
+use App\GraphQL\Types\AttributesItemType;
 use App\GraphQL\Types\OrderItemType;
 use App\GraphQL\Types\OrderType;
 use GraphQL\Type\Definition\ObjectType;
@@ -14,7 +15,7 @@ use App\GraphQL\Types\ProductType;
 use Throwable;
 
 class QueryType extends ObjectType {
-    public function __construct($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService) {
+    public function __construct($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $attributeItemsService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService) {
 
         $config = [
             'name' => 'Query',
@@ -44,6 +45,12 @@ class QueryType extends ObjectType {
                     'type' => Type::listOf(new AttributeType()),
                     'resolve' => function() use ($attributeService) {
                         return $attributeService->getAllAttributes();
+                    }
+                ],
+                'attributeItems' => [
+                    'type' => Type::listOf(new AttributesItemType()),
+                    'resolve' => function() use ($attributeItemsService) {
+                        return $attributeItemsService->getAllAttributesItems();
                     }
                 ],
                 'galleries' => [

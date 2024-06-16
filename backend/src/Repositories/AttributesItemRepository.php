@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\config\Database;
 use App\Repositories\RepositoryInterface;
-use App\Models\AttributeItem;
+use App\Models\Attributes\AttributeItem;
 
 class AttributesItemRepository implements RepositoryInterface
 {
@@ -26,19 +26,21 @@ class AttributesItemRepository implements RepositoryInterface
     }
 
     public function save($attributeItem) {
-        $stmt = $this->db->prepare("INSERT INTO attribute_items (attribute_id, display_value, value) VALUES (:attribute_id, :display_value, :value)");
+        $stmt = $this->db->prepare("INSERT INTO attribute_items (attribute_id, product_id, display_value, value) VALUES (:attribute_id, :product_id, :display_value, :value)");
         $stmt->execute([
             'attribute_id' => $attributeItem->attributeId,
+            'product_id' => $attributeItem->product_id,
             'display_value' => $attributeItem->displayValue,
             'value' => $attributeItem->value
         ]);
     }
 
     public function update($attributeItem) {
-        $stmt = $this->db->prepare("UPDATE attribute_items SET attribute_id = :attribute_id, display_value = :display_value, value = :value WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE attribute_items SET attribute_id = :attribute_id, product_id = :product_id, display_value = :display_value, value = :value WHERE id = :id");
         $stmt->execute([
             'id' => $attributeItem->id,
             'attribute_id' => $attributeItem->attributeId,
+            'product_id' => $attributeItem->product_id,
             'display_value' => $attributeItem->displayValue,
             'value' => $attributeItem->value
         ]);

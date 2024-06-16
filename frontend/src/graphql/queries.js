@@ -20,6 +20,40 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
+export const GET_PRODUCT = gql`
+    query GetProduct($id: String!) {
+        product(id: $id) {
+        id
+        name
+        in_stock
+        description
+        category_id
+        }
+    }
+`;
+
+export const GET_PRODUCT_ATTRIBUTES = gql`
+    query GetProductAttributes {
+        attributes {
+        id
+        product_id
+        name
+        type
+        }
+    }
+`;
+
+export const GET_PRODUCT_ATTRIBUTE_ITEMS = gql`
+    query GetProductAttributeItems {
+        attributeItems {
+        id
+        attribute_id
+        display_value
+        value
+        }
+    }
+`;
+
 export const GET_GALLERY_IMAGES = gql`
     query GetGalleryImages {
         galleries {

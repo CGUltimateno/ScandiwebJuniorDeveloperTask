@@ -27,7 +27,6 @@ class AttributesService implements AttributeServiceInterface {
             $data['product_id'],
             $data['name'],
             $data['type'],
-            $data['attribute_items_id']
         );
         $this->attributeRepository->save($attribute);
     }
@@ -38,7 +37,6 @@ class AttributesService implements AttributeServiceInterface {
             $data['product_id'],
             $data['name'],
             $data['type'],
-            $data['attribute_items_id']
         );
         $this->attributeRepository->update($attribute);
     }

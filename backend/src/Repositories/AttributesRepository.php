@@ -26,23 +26,21 @@ class AttributesRepository implements RepositoryInterface
     }
 
     public function save($attribute) {
-        $stmt = $this->db->prepare("INSERT INTO attributes (product_id, name, type, attribute_items_id) VALUES (:product_id, :name, :type, :attribute_items_id)");
+        $stmt = $this->db->prepare("INSERT INTO attributes (product_id, name, type) VALUES (:product_id, :name, :type)");
         $stmt->execute([
             'product_id' => $attribute->productId,
             'name' => $attribute->name,
             'type' => $attribute->type,
-            'attribute_items_id' => $attribute->attribute_items_id
-        ]);
+            ]);
     }
 
     public function update($attribute) {
-        $stmt = $this->db->prepare("UPDATE attributes SET product_id = :product_id, name = :name, type = :type, attribute_items_id = :attribute_items_id WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE attributes SET product_id = :product_id, name = :name, type = :type WHERE id = :id");
         $stmt->execute([
             'id' => $attribute->id,
             'product_id' => $attribute->productId,
             'name' => $attribute->name,
             'type' => $attribute->type,
-            'attribute_items_id' => $attribute->attribute_items_id
         ]);
     }
 

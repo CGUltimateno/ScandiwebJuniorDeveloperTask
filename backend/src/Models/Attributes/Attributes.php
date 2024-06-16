@@ -1,11 +1,11 @@
 <?php
-namespace App\Models;
+namespace App\Models\Attributes;
 
 use App\Models\Abstracts\AbstractAttribute;
 
 class Attributes extends AbstractAttribute {
-    public function __construct($id, $productId, $name, $type, $attributeItemId) {
-        parent::__construct($id, $productId, $name, $type, $attributeItemId);
+    public function __construct($id, $productId, $name, $type) {
+        parent::__construct($id, $productId, $name, $type);
     }
 
     public function getAttributeType(): string {

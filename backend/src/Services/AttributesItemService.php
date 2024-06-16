@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\AttributeItem;
+use App\Models\Attributes\AttributeItem;
 use App\Repositories\AttributesItemRepository;
 use App\config\Database;
 class AttributesItemService
@@ -25,6 +25,7 @@ class AttributesItemService
         $attributesItem = new AttributeItem(
             null,
             $data['attribute_id'],
+            $data['product_id'],
             $data['displayValue'],
             $data['value']
         );
@@ -35,6 +36,7 @@ class AttributesItemService
         $attributesItem = new AttributeItem(
             $id,
             $data['attribute_id'],
+            $data['product_id'],
             $data['displayValue'],
             $data['value']
         );
