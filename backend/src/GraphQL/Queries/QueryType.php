@@ -47,10 +47,28 @@ class QueryType extends ObjectType {
                         return $attributeService->getAllAttributes();
                     }
                 ],
+                'attributesByProductId' => [
+                    'type' => Type::listOf(new AttributeType()),
+                    'args' => [
+                        'productId' => Type::nonNull(Type::string()),
+                    ],
+                    'resolve' => function($root, $args) use ($attributeService) {
+                        return $attributeService->getAttributesbyProductId($args['productId']);
+                    }
+                ],
                 'attributeItems' => [
                     'type' => Type::listOf(new AttributesItemType()),
                     'resolve' => function() use ($attributeItemsService) {
-                        return $attributeItemsService->getAllAttributesItems();
+                        return $attributeItemsService->getAttributesItemsbyProductId();
+                    }
+                ],
+                'attributeItemsByProductId' => [
+                    'type' => Type::listOf(new AttributesItemType()),
+                    'args' => [
+                        'productId' => Type::nonNull(Type::string()),
+                    ],
+                    'resolve' => function($root, $args) use ($attributeItemsService) {
+                        return $attributeItemsService->getAttributesItemsbyProductId($args['productId']);
                     }
                 ],
                 'galleries' => [
@@ -59,10 +77,28 @@ class QueryType extends ObjectType {
                         return $galleryService->getAllGalleryItems();
                     }
                 ],
+                'galleriesByProductId' => [
+                    'type' => Type::listOf(new GalleryType()),
+                    'args' => [
+                        'productId' => Type::nonNull(Type::string()),
+                    ],
+                    'resolve' => function($root, $args) use ($galleryService) {
+                        return $galleryService->getGalleryItemsByProductId($args['productId']);
+                    }
+                ],
                 'prices' => [
                     'type' => Type::listOf(new PriceType()),
                     'resolve' => function() use ($priceService) {
                         return $priceService->getAllPrices();
+                    }
+                ],
+                'pricesByProductId' => [
+                    'type' => Type::listOf(new PriceType()),
+                    'args' => [
+                        'productId' => Type::nonNull(Type::string()),
+                    ],
+                    'resolve' => function($root, $args) use ($priceService) {
+                        return $priceService->getPricesByProductId($args['productId']);
                     }
                 ],
                 'currencies' => [

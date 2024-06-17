@@ -48,4 +48,11 @@ class AttributesRepository implements RepositoryInterface
         $stmt = $this->db->prepare("DELETE FROM attributes WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+
+    public function findByProductId($productId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM attributes WHERE product_id = :product_id");
+        $stmt->execute(['product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
 }

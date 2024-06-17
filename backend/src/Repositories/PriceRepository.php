@@ -24,6 +24,12 @@ class PriceRepository implements RepositoryInterface {
         return $stmt->fetch();
     }
 
+    public function findByProductId($productId) {
+        $stmt = $this->db->prepare("SELECT * FROM prices WHERE product_id = :product_id");
+        $stmt->execute(['product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
+
     public function save($price) {
         $stmt = $this->db->prepare("INSERT INTO prices (product_id, amount, currency_id) VALUES (:product_id, :amount, :currency_id)");
         $stmt->execute([

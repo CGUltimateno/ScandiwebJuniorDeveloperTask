@@ -20,6 +20,11 @@ class PriceService {
         return $this->priceRepository->findById($id);
     }
 
+    public function getPricesByProductId($productId)
+    {
+        return $this->priceRepository->findByProductId($productId);
+    }
+
     public function createPrice($data) {
         $price = new Price(
             null,

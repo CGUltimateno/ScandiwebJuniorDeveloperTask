@@ -20,6 +20,10 @@ class GalleryService {
         return $this->galleryRepository->findById($id);
     }
 
+    public function getGalleryItemsByProductId($productId) {
+        return $this->galleryRepository->findByProductId($productId);
+    }
+
     public function createGalleryItem($data) {
         $gallery = new Gallery(
             null,

@@ -52,4 +52,11 @@ class GalleryRepository implements RepositoryInterface
         $stmt = $this->db->prepare("DELETE FROM gallery WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+
+    public function findByProductId($productId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM gallery WHERE product_id = :product_id");
+        $stmt->execute(['product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
 }

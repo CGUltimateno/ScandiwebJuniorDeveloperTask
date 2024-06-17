@@ -21,6 +21,10 @@ class AttributesItemService
         return $this->attributesItemRepository->findById($id);
     }
 
+    public function getAttributesItemsbyProductId($productId) {
+        return $this->attributesItemRepository->findByProductId($productId);
+    }
+
     public function createAttributesItem($data) {
         $attributesItem = new AttributeItem(
             null,

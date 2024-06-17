@@ -21,6 +21,10 @@ class AttributesService implements AttributeServiceInterface {
         return $this->attributeRepository->findById($id);
     }
 
+    public function getAttributesbyProductId($productId) {
+        return $this->attributeRepository->findByProductId($productId);
+    }
+
     public function createAttribute($data) {
         $attribute = new Attributes(
             null,
