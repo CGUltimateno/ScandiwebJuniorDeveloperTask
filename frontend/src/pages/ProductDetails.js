@@ -3,24 +3,18 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import {
     GET_PRODUCT,
-    GET_PRODUCT_ATTRIBUTES,
-    GET_PRODUCT_ATTRIBUTE_ITEMS,
-    GET_GALLERY_IMAGES,
-    GET_PRICES,
-    GET_CURRENCY,
+    GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID,
+    GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID,
     GET_GALLERY_IMAGES_BY_PRODUCT_ID,
     GET_PRICE_BY_PRODUCT_ID,
-    GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID,
-    GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID
+    GET_CURRENCY
 } from "../graphql/queries";
-import { addToCart } from "../redux/actions/cartActions";
 import { connect } from "react-redux";
 import './ProductDetails.css';
 
 function ProductDetails({ addToCart }) {
     const { productId } = useParams();
 
-    // Fetch all necessary data
     const { loading: productLoading, error: productError, data: productData } = useQuery(GET_PRODUCT, {
         variables: { id: productId },
     });
@@ -53,10 +47,16 @@ function ProductDetails({ addToCart }) {
                 acc[curr.id] = curr;
                 return acc;
             }, {});
-
+            const uniqueAttributeItems = attributeItems.reduce((acc, item) => {
+                const key = `${item.attribute_id}-${item.value}`;
+                if (!acc[key]) {
+                    acc[key] = item;
+                }
+                return acc;
+            }, {});
             const groupedAttributes = attributes.map(attr => ({
                 ...attr,
-                items: attributeItems.filter(item => item.attribute_id === attr.id)
+                items: Object.values(uniqueAttributeItems).filter(item => item.attribute_id === attr.id)
             }));
 
             setProductDetails({
@@ -72,15 +72,15 @@ function ProductDetails({ addToCart }) {
             if (gallery.length > 0) {
                 setSelectedImage(gallery[0].image_url);
             }
-
         }
-    }, [productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData]);
+    }, [productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData, productId]);
 
     if (productLoading || attributesLoading || attributeItemsLoading || galleryLoading || pricesLoading || currencyLoading) {
         return <p>Loading...</p>;
     }
 
     if (productError || attributesError || attributeItemsError || galleryError || pricesError || currencyError) {
+        console.log(productError, attributesError, attributeItemsError, galleryError, pricesError, currencyError);
         return <p>Error :(</p>;
     }
 
@@ -99,39 +99,45 @@ function ProductDetails({ addToCart }) {
 
     const isAddToCartDisabled = product.attributes.some(
         (attr) => !selectedAttributes[attr.id]
-    );
+    ) || product.in_stock === false;
 
+    function toKebabCase(str) {
+        return str
+            .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+            .join('-')
+            .toLowerCase();
+    }
     return (
         <div className="product-details">
             <div className="product-gallery" data-testid="product-gallery">
                 <div className="thumbnails">
                     {product.gallery.map((image, index) => (
-                        <img
-                            key={index}
-                            src={image.image_url}
-                            alt={product.name}
-                            onClick={() => setSelectedImage(image.image_url)}
-                            className={selectedImage === image.image_url ? 'selected' : ''}
-                        />
-                    ))}
+                        <img key={index} src={image.image_url} alt={product.name} onClick={() => setSelectedImage(image.image_url)} className={selectedImage === image.image_url ? 'selected' : ''}/>))}
                 </div>
                 <div className="main-image">
                     {selectedImage && <img src={selectedImage} alt={product.name} />}
+                    {product.gallery.length > 1 && (
+                        <div className="arrows">
+                            <button onClick={() => { const currentIndex = product.gallery.findIndex(img => img.image_url === selectedImage);
+                                const newIndex = (currentIndex - 1 + product.gallery.length) % product.gallery.length;
+                                setSelectedImage(product.gallery[newIndex].image_url);
+                            }}>{"<"}</button>
+                            <button onClick={() => { const currentIndex = product.gallery.findIndex(img => img.image_url === selectedImage);
+                                const newIndex = (currentIndex + 1) % product.gallery.length;setSelectedImage(product.gallery[newIndex].image_url);
+                            }}>{">"}</button>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="product-info">
                 <h1>{product.name}</h1>
                 {product.attributes.map((attribute) => (
-                    <div
-                        key={attribute.id}
-                        className="product-attribute"
-                        data-testid={`product-attribute-${attribute.name.toLowerCase().replace(/ /g, '-')}`}
+                    <div key={attribute.id} className="product-attribute" data-testid={`product-attribute-${toKebabCase(attribute.name)}`}
                     >
                         <h3 className="title">{attribute.name.toUpperCase()}:</h3>
                         <div className="attribute-options">
                             {attribute.items.map((item) => (
-                                <button key={item.value}
-                                        className={`attribute-option ${attribute.type === "swatch" ? "color-options" : ""} ${selectedAttributes[attribute.id] === item.value ? "selected" : ""}`}
+                                <button key={item.value} className={`attribute-option ${attribute.type === "swatch" ? "color-options" : ""} ${selectedAttributes[attribute.id] === item.value ? "selected" : ""}`}
                                         onClick={() => handleAttributeChange(attribute.id, item.value)}>
                                     {attribute.type === "swatch" ? (<span className="color-swatch swatch" style={{backgroundColor: item.value}}></span>) : (item.display_value)}
                                 </button>
@@ -143,19 +149,21 @@ function ProductDetails({ addToCart }) {
                     <h3 className="title">PRICE:</h3>
                     <p className="price">{product.prices[0].currency.symbol}{product.prices[0].amount.toFixed(2)}</p>
                 </div>
-                <button className="add-to-cart" onClick={() => addToCart({...product, selectedAttributes})}
-                        data-testid="add-to-cart" disabled={isAddToCartDisabled}>
+                <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`} onClick={() => addToCart({ ...product, selectedAttributes })} data-testid="add-to-cart"
+                    disabled={isAddToCartDisabled}>
                     ADD TO CART
                 </button>
-                <div className="product-description" data-testid="product-description"
-                     dangerouslySetInnerHTML={{__html: product.description}}/>
+                <div className="product-description" data-testid="product-description">
+                    {product.description.split('\n').map((line, index) => (
+                        <p key={index}>{line}</p>
+                    ))}
+                </div>
             </div>
         </div>
     );
 }
 
 const mapDispatchToProps = {
-    addToCart,
 };
 
 export default connect(null, mapDispatchToProps)(ProductDetails);

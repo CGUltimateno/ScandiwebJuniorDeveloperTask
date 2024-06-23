@@ -15,6 +15,7 @@
     margin-right: 16px;
 }
 
+
 .thumbnails img {
     cursor: pointer;
     width: 80px;
@@ -101,7 +102,7 @@
     display: inline-block;
     width: 24px;
     height: 24px;
-    vertical-align: middle; /* Add this line */
+    vertical-align: middle;
 
     margin: 0;
     padding: 0;

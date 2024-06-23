@@ -67,7 +67,6 @@ export const GET_PRODUCT_ATTRIBUTE_ITEMS = gql`
 export const GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID = gql`
     query GetProductAttributeItemsByProductId($productId: String!) {
         attributeItemsByProductId(productId: $productId) {
-        id
         attribute_id
         display_value
         value

@@ -12,10 +12,7 @@ const ProductsPage = () => {
   if (error) return <p>Error :(</p>;
 
   const category = data.categories.find(category => category.id === Number(categoryId));
-  console.log(categoryId)
-  console.log(data.categories)
   const categoryName = category ? category.name.charAt(0).toUpperCase() + category.name.slice(1) : 'All Products';
-  console.log(categoryName)
 
   return (
       <div>

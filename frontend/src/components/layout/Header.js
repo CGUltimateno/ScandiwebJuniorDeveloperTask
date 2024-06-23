@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useQuery } from '@apollo/client';
 import { Link, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCategories } from '../../redux/reducers/categorySlice';
 import { GET_CATEGORIES } from '../../graphql/queries';
 import './Header.css';
 import logo from './logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import CartOverlay from './CartOverlay';
 
 const Header = () => {
     const dispatch = useDispatch();
     const { loading, error, data } = useQuery(GET_CATEGORIES);
     const location = useLocation();
     const [categoryId, setCategoryId] = useState(location.pathname.split('/')[1]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const cartItems = useSelector((state) => state.cart.items);
+    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     useEffect(() => {
         if (data) {
@@ -49,9 +53,11 @@ const Header = () => {
                 </Link>
             </div>
             <div className="cart-container">
-                <button className="cart-btn">
-                    <FontAwesomeIcon icon={faShoppingCart}/>
+                <button className="cart-btn" onClick={() => setIsCartOpen(!isCartOpen)} data-testid="cart-btn">
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                    {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
                 </button>
+                {isCartOpen && <CartOverlay onClose={() => setIsCartOpen(false)} />}
             </div>
         </header>
     );
