@@ -2,6 +2,10 @@ export const ADD_TO_CART = 'ADD_TO_CART';
 export const INCREMENT_ITEM = 'INCREMENT_ITEM';
 export const DECREMENT_ITEM = 'DECREMENT_ITEM';
 export const REMOVE_ITEM = 'REMOVE_ITEM';
+export const UPDATE_ITEM_ATTRIBUTES = 'UPDATE_ITEM_ATTRIBUTES';
+
+export const CLEAR_CART = 'CLEAR_CART';
+
 
 export const addToCart = (item) => ({
     type: ADD_TO_CART,
@@ -21,4 +25,13 @@ export const decrementItem = (id) => ({
 export const removeItem = (id) => ({
     type: REMOVE_ITEM,
     payload: id
+});
+
+export const updateItemAttributes = (id, attributes) => ({
+    type: UPDATE_ITEM_ATTRIBUTES,
+    payload: { id, attributes }
+});
+
+export const clearCart = () => ({
+    type: CLEAR_CART
 });

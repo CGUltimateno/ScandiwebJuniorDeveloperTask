@@ -59,7 +59,7 @@ class QueryType extends ObjectType {
                 'attributeItems' => [
                     'type' => Type::listOf(new AttributesItemType()),
                     'resolve' => function() use ($attributeItemsService) {
-                        return $attributeItemsService->getAttributesItemsbyProductId();
+                        return $attributeItemsService->getAllAttributesItems();
                     }
                 ],
                 'attributeItemsByProductId' => [

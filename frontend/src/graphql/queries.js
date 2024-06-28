@@ -33,8 +33,8 @@ export const GET_PRODUCT = gql`
 `;
 
 export const GET_PRODUCT_ATTRIBUTES = gql`
-    query GetProductAttributes($productId: String!) {
-        attributes(productId: $productId) {
+    query GetProductAttributes {
+        attributes{
         id
         product_id
         name
@@ -54,10 +54,11 @@ export const GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID = gql`
 `;
 
 export const GET_PRODUCT_ATTRIBUTE_ITEMS = gql`
-    query GetProductAttributeItems($productId: String!) {
-        attributeItems(productId: $productId) {
+    query GetProductAttributeItems {
+        attributeItems {
         id
         attribute_id
+        product_id
         display_value
         value
         }
@@ -68,6 +69,7 @@ export const GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID = gql`
     query GetProductAttributeItemsByProductId($productId: String!) {
         attributeItemsByProductId(productId: $productId) {
         attribute_id
+        product_id
         display_value
         value
         }
@@ -124,3 +126,12 @@ export const GET_CURRENCY = gql`
         }
     }
     `;
+
+export const CREATE_ORDER_WITH_ITEMS = gql`
+    mutation CreateOrderWithItems($total: Float!, $items: [OrderItemInput!]!) {
+        createOrderWithItems(total: $total, items: $items) {
+            id
+            total
+        }
+    }
+`;

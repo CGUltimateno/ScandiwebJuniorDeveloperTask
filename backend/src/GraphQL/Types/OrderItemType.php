@@ -13,6 +13,8 @@ class OrderItemType extends ObjectType {
                 'id' => Type::int(),
                 'order_id' => Type::int(),
                 'product_id' => Type::string(),
+                'attribute_id' => Type::string(),
+                'attribute_item_id' => Type::string(),
                 'quantity' => Type::int()
             ]
         ];

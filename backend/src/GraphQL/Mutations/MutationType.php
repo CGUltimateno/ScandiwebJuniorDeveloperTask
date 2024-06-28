@@ -16,7 +16,7 @@ class MutationType extends ObjectType {
         $config = [
             'name' => 'Mutation',
             'fields' => [
-                'createOrder' => [
+                'createOrderWithItems' => [
                     'type' => $orderType,
                     'args' => [
                         'total' => Type::nonNull(Type::float()),
@@ -34,7 +34,7 @@ class MutationType extends ObjectType {
                         'quantity' => Type::nonNull(Type::int()),
                     ],
                     'resolve' => function($root, $args) use ($orderItemService) {
-                        $orderItem = new OrderItem(null, $args['order_id'], $args['product_id'], $args['quantity']);
+                        $orderItem = new OrderItem(null, $args['order_id'], $args['product_id'], $args['quantity'], $args['attribute_id'], $args['attribute_item_id']);
                         return $orderItemService->createOrderItem($orderItem);
                     }
                 ],

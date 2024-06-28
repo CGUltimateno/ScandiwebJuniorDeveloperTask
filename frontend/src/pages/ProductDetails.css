@@ -30,6 +30,7 @@
 
 .main-image {
     flex: 1;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,7 +104,6 @@
     width: 24px;
     height: 24px;
     vertical-align: middle;
-
     margin: 0;
     padding: 0;
     border: 1px solid #000000;
@@ -130,4 +130,38 @@
     width: 50%;
     height: 500px;
     overflow: auto;
+}
+
+.arrows {
+    position: absolute;
+    top: 50%;
+    background-color: white;
+    transform: translateY(-50%);
+    display: flex;
+}
+
+.arrows button {
+    background: rgb(67, 67, 67);
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.arrows button:hover {
+    background: rgb(0, 0, 0);
+}
+
+.arrows button:first-child {
+    position: absolute;
+    left: 200px;
+    color: white;
+
+}
+
+.arrows button:last-child {
+    position: absolute;
+    right: 200px;
+    color: white;
 }

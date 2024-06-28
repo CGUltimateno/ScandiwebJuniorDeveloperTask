@@ -1,19 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import {useLazyQuery, useQuery} from "@apollo/client";
 import { Link, useParams } from "react-router-dom";
-import { GET_PRODUCTS, GET_GALLERY_IMAGES, GET_PRICES, GET_CURRENCY } from "../../graphql/queries";
+import { useDispatch } from "react-redux";
+import {
+    GET_PRODUCTS,
+    GET_GALLERY_IMAGES,
+    GET_PRICES,
+    GET_CURRENCY,
+    GET_PRODUCT_ATTRIBUTES,
+    GET_PRODUCT_ATTRIBUTE_ITEMS,
+    GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID
+} from "../../graphql/queries";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { addToCart } from '../../redux/actions/cartActions';
 import './ProductList.css';
 
 export function ProductList() {
     const { categoryId } = useParams();
+    const dispatch = useDispatch();
     const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
     const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES);
     const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICES);
     const { loading: currencyLoading, error: currencyError, data: currencyData } = useQuery(GET_CURRENCY);
-
+    const { loading: ProductAttributesLoading, error: ProductAttributesError, data: ProductAttributesData } = useQuery(GET_PRODUCT_ATTRIBUTES);
+    const { loading: productAttributeItemsLoading, error: productAttributeItemsError, data: productAttributeItemsData } = useQuery(GET_PRODUCT_ATTRIBUTE_ITEMS);
     const [products, setProducts] = useState([]);
+    const [getProductAttributes, { data: productAttributesData }] = useLazyQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID, {
+        onCompleted: data => {
+            const product = products.find(product => product.id === data.attributeItemsByProductId[1].product_id);
+            if (product) {
+                const attributes = data.attributeItemsByProductId;
+                dispatch(addToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    currency: product.currency,
+                    image: product.gallery[0]?.image_url,
+                    quantity: 1,
+                    attributes: attributes
+                }));
+            }
+        }
+    });
 
     function toKebabCase(str) {
         return str
@@ -43,19 +72,37 @@ export function ProductList() {
     }
 
     const filteredProducts = categoryId === '1' ? products : products.filter(product => product.category_id === parseInt(categoryId));
+
+    const handleAddToCart = (product) => {
+        const productAttributes = productAttributeItemsData.attributeItems.filter(item => item.product_id === product.id);
+        if (productAttributes.length > 0) {
+            getProductAttributes({ variables: { productId: product.id } });
+        } else {
+            dispatch(addToCart({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                currency: product.currency,
+                image: product.gallery[0]?.image_url,
+                quantity: 1,
+                attributes: []
+            }));
+        }
+    };
+
     return (
         <div className="products-grid">
-            {filteredProducts.map((product) => (
+            {Array.isArray(filteredProducts) && filteredProducts.map((product) => (
                 <div className='product-card' key={product.id} data-testid={`product-${toKebabCase(product.name)}`}>
                     <div className='product-img'>
-                    <Link to={`/product/${product.id}`}>
+                        <Link to={`/product/${product.id}`}>
                             {product.gallery[0] && <img src={product.gallery[0].image_url} alt={product.name} className="product-image" />}
                             {!product.in_stock && <div className="out-of-stock">OUT OF STOCK</div>}
                         </Link>
                         {product.in_stock && (
-                        <button className="cart-button">
-                            <FontAwesomeIcon icon={faShoppingCart}/>
-                        </button>
+                            <button className="cart-button" onClick={() => handleAddToCart(product)}>
+                                <FontAwesomeIcon icon={faShoppingCart}/>
+                            </button>
                         )}
                     </div>
                     <div className='product-info'>

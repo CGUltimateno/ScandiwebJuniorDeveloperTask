@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import { addToCart } from "../redux/actions/cartActions";
 import {
     GET_PRODUCT,
     GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID,
@@ -93,7 +94,7 @@ function ProductDetails({ addToCart }) {
     const handleAttributeChange = (attributeId, value) => {
         setSelectedAttributes({
             ...selectedAttributes,
-            [attributeId]: value,
+            [attributeId]: value
         });
     };
 
@@ -107,39 +108,64 @@ function ProductDetails({ addToCart }) {
             .join('-')
             .toLowerCase();
     }
+
     return (
         <div className="product-details">
             <div className="product-gallery" data-testid="product-gallery">
                 <div className="thumbnails">
                     {product.gallery.map((image, index) => (
-                        <img key={index} src={image.image_url} alt={product.name} onClick={() => setSelectedImage(image.image_url)} className={selectedImage === image.image_url ? 'selected' : ''}/>))}
+                        <img key={index} src={image.image_url} alt={product.name}
+                             onClick={() => setSelectedImage(image.image_url)}
+                             className={selectedImage === image.image_url ? 'selected' : ''}/>))}
                 </div>
                 <div className="main-image">
-                    {selectedImage && <img src={selectedImage} alt={product.name} />}
+                    {selectedImage && <img src={selectedImage} alt={product.name}/>}
                     {product.gallery.length > 1 && (
                         <div className="arrows">
-                            <button onClick={() => { const currentIndex = product.gallery.findIndex(img => img.image_url === selectedImage);
-                                const newIndex = (currentIndex - 1 + product.gallery.length) % product.gallery.length;
-                                setSelectedImage(product.gallery[newIndex].image_url);
-                            }}>{"<"}</button>
-                            <button onClick={() => { const currentIndex = product.gallery.findIndex(img => img.image_url === selectedImage);
-                                const newIndex = (currentIndex + 1) % product.gallery.length;setSelectedImage(product.gallery[newIndex].image_url);
-                            }}>{">"}</button>
+                            <button
+                                onClick={() => {
+                                    const currentIndex = product.gallery.findIndex(
+                                        (img) => img.image_url === selectedImage
+                                    );
+                                    const newIndex =
+                                        (currentIndex + 1) % product.gallery.length;
+                                    setSelectedImage(product.gallery[newIndex].image_url);
+                                }}
+                            >
+                                {">"}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    const currentIndex = product.gallery.findIndex(
+                                        (img) => img.image_url === selectedImage
+                                    );
+                                    const newIndex =
+                                        (currentIndex - 1 + product.gallery.length) %
+                                        product.gallery.length;
+                                    setSelectedImage(product.gallery[newIndex].image_url);
+                                }}
+                            >
+                                {"<"}
+                            </button>
                         </div>
                     )}
                 </div>
+
             </div>
             <div className="product-info">
                 <h1>{product.name}</h1>
                 {product.attributes.map((attribute) => (
-                    <div key={attribute.id} className="product-attribute" data-testid={`product-attribute-${toKebabCase(attribute.name)}`}
+                    <div key={attribute.id} className="product-attribute"
+                         data-testid={`product-attribute-${toKebabCase(attribute.name)}`}
                     >
                         <h3 className="title">{attribute.name.toUpperCase()}:</h3>
                         <div className="attribute-options">
                             {attribute.items.map((item) => (
-                                <button key={item.value} className={`attribute-option ${attribute.type === "swatch" ? "color-options" : ""} ${selectedAttributes[attribute.id] === item.value ? "selected" : ""}`}
+                                <button key={item.value}
+                                        className={`attribute-option ${attribute.type === "swatch" ? "color-options" : ""} ${selectedAttributes[attribute.id] === item.value ? "selected" : ""}`}
                                         onClick={() => handleAttributeChange(attribute.id, item.value)}>
-                                    {attribute.type === "swatch" ? (<span className="color-swatch swatch" style={{backgroundColor: item.value}}></span>) : (item.display_value)}
+                                    {attribute.type === "swatch" ? (<span className="color-swatch swatch"
+                                                                          style={{backgroundColor: item.value}}></span>) : (item.value)}
                                 </button>
                             ))}
                         </div>
@@ -149,8 +175,26 @@ function ProductDetails({ addToCart }) {
                     <h3 className="title">PRICE:</h3>
                     <p className="price">{product.prices[0].currency.symbol}{product.prices[0].amount.toFixed(2)}</p>
                 </div>
-                <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`} onClick={() => addToCart({ ...product, selectedAttributes })} data-testid="add-to-cart"
-                    disabled={isAddToCartDisabled}>
+                <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`}
+                        onClick={() => {
+                            const attributesWithSelection = product.attributes.flatMap(attr => (
+                                attr.items.map(item => ({
+                                    ...item,
+                                    selected: selectedAttributes[attr.id] === item.value
+                                }))
+                            ));
+                            addToCart({
+                                id: product.id,
+                                name: product.name,
+                                price: product.prices[0].amount,
+                                currency: product.prices[0].currency.symbol,
+                                image: product.gallery[0]?.image_url,
+                                quantity: 1,
+                                attributes: attributesWithSelection
+                            });
+                        }}
+                        data-testid="add-to-cart"
+                        disabled={isAddToCartDisabled}>
                     ADD TO CART
                 </button>
                 <div className="product-description" data-testid="product-description">
@@ -164,6 +208,10 @@ function ProductDetails({ addToCart }) {
 }
 
 const mapDispatchToProps = {
+    addToCart: (item) => {
+        console.log(item); // This will log the item
+        return addToCart(item);
+    },
 };
 
 export default connect(null, mapDispatchToProps)(ProductDetails);

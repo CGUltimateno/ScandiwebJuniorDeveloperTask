@@ -1,4 +1,9 @@
-import { ADD_TO_CART, INCREMENT_ITEM, DECREMENT_ITEM, REMOVE_ITEM } from '../actions/cartActions';
+import {
+    ADD_TO_CART,
+    INCREMENT_ITEM,
+    DECREMENT_ITEM,
+    REMOVE_ITEM,
+} from '../actions/cartActions';
 
 const initialState = {
     items: []
@@ -8,11 +13,14 @@ const cartReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TO_CART:
             const existingItemIndex = state.items.findIndex(
-                (item) => item.id === action.payload.id && item.size === action.payload.size && item.color === action.payload.color
+                (item) => item.id === action.payload.id && JSON.stringify(item.attributes) === JSON.stringify(action.payload.attributes)
             );
             if (existingItemIndex >= 0) {
                 const newItems = [...state.items];
-                newItems[existingItemIndex].quantity += action.payload.quantity;
+                newItems[existingItemIndex] = {
+                    ...newItems[existingItemIndex],
+                    quantity: newItems[existingItemIndex].quantity + 1
+                };
                 return {
                     ...state,
                     items: newItems
