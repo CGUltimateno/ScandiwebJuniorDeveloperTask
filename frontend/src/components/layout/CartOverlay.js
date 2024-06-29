@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { incrementItem, decrementItem, removeItem } from '../../redux/actions/cartActions';
+import { useMutation } from '@apollo/client';
+import { incrementItem, decrementItem, removeItem, clearCart } from '../../redux/actions/cartActions';
 import styles from './CartOverlay.module.css';
+import { CREATE_ORDER, CREATE_ORDER_ITEM } from '../../graphql/queries';
 
 const CartOverlay = ({ onClose }) => {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
     const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
     const [cartIsOpen, setCartIsOpen] = useState(true);
+
+    const [createOrder] = useMutation(CREATE_ORDER);
+    const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
 
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
@@ -27,6 +32,40 @@ const CartOverlay = ({ onClose }) => {
         onClose();
     };
 
+    const handlePlaceOrder = async () => {
+        try {
+            const { data: orderData } = await createOrder({ variables: { total: parseFloat(totalAmount) } });
+            const orderId = orderData.createOrderWithItems.id;
+
+            for (const item of cartItems) {
+                const selectedAttributes = item.attributes.filter(attribute => attribute.selected);
+
+                for (const attribute of selectedAttributes) {
+                    console.log({
+                        order_id: orderId,
+                        product_id: item.id,
+                        attribute_id: attribute.attribute_id,
+                        attribute_item_id: attribute.display_value,
+                        quantity: item.quantity
+                    });
+
+                    await createOrderItem({
+                        variables: {
+                            order_id: orderId,
+                            product_id: item.id,
+                            attribute_id: attribute.attribute_id,
+                            attribute_item_id: attribute.display_value,
+                            quantity: item.quantity
+                        }
+                    });
+                }
+            }
+
+            dispatch(clearCart());
+        } catch (error) {
+            console.error("Error placing order:", error);
+        }
+    };
     function groupAttributesByAttributeId(attributes) {
         if (!Array.isArray(attributes)) {
             console.error('attributes is not an array:', attributes);
@@ -108,7 +147,8 @@ const CartOverlay = ({ onClose }) => {
                         <span>Total</span>
                         <span className={styles.cartTotalPrice}>${totalAmount}</span>
                     </div>
-                    <button className={styles.placeOrderBtn} disabled={cartItems.length === 0}>PLACE ORDER
+                    <button className={styles.placeOrderBtn} disabled={cartItems.length === 0} onClick={handlePlaceOrder}>
+                        PLACE ORDER
                     </button>
                 </div>
             </div>

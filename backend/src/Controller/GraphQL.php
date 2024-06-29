@@ -50,7 +50,7 @@ class GraphQL {
             $orderType = new OrderType();
             $orderItemType = new OrderItemType();
 
-            $queryType = new QueryType($productType, $orderType, $orderItemType, $productService, $categoryService, $attributeService, $attributeItemsService, $galleryService, $priceService, $currencyService, $orderService, $orderItemService);
+            $queryType = new QueryType($productType, $productService, $categoryService, $attributeService, $attributeItemsService, $galleryService, $priceService, $currencyService);
             $mutationType = new MutationType($orderService, $orderItemService, $orderType, $orderItemType);
 
             $schema = new Schema(

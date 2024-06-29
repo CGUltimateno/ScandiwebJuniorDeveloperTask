@@ -7,7 +7,6 @@ use GraphQL\Type\Definition\Type;
 class AttributeType extends ObjectType {
     public function __construct() {
         $config = [
-            'name' => 'Attribute',
             'fields' => [
                 'id' => Type::string(),
                 'name' => Type::string(),

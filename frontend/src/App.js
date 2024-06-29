@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { ApolloProvider } from '@apollo/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import client from './apolloClient';
 import store from './redux/store';
 import Header from './components/layout/Header';
@@ -16,7 +16,7 @@ class App extends React.Component {
                     <Router>
                         <Header />
                         <Routes>
-                            <Route path="/" element={<ProductsPage />} />
+                            <Route path="/" element={<Navigate to="/1" />} />
                             <Route path="/:categoryId" element={<ProductsPage />} />
                             <Route path="/product/:productId" element={<ProductDetails />} />
                         </Routes>

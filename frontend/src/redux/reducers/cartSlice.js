@@ -2,7 +2,7 @@ import {
     ADD_TO_CART,
     INCREMENT_ITEM,
     DECREMENT_ITEM,
-    REMOVE_ITEM,
+    REMOVE_ITEM, CLEAR_CART,
 } from '../actions/cartActions';
 
 const initialState = {
@@ -50,6 +50,12 @@ const cartReducer = (state = initialState, action) => {
                 ...state,
                 items: state.items.filter((item) => item.id !== action.payload)
             };
+        case CLEAR_CART:
+            return {
+                ...state,
+                items: []
+            };
+
         default:
             return state;
     }

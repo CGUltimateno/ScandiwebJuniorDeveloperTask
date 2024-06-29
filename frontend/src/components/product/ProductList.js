@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useLazyQuery, useQuery} from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
@@ -7,8 +7,6 @@ import {
     GET_GALLERY_IMAGES,
     GET_PRICES,
     GET_CURRENCY,
-    GET_PRODUCT_ATTRIBUTES,
-    GET_PRODUCT_ATTRIBUTE_ITEMS,
     GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID
 } from "../../graphql/queries";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,34 +20,9 @@ export function ProductList() {
     const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
     const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES);
     const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICES);
-    const { loading: currencyLoading, error: currencyError, data: currencyData } = useQuery(GET_CURRENCY);
-    const { loading: ProductAttributesLoading, error: ProductAttributesError, data: ProductAttributesData } = useQuery(GET_PRODUCT_ATTRIBUTES);
-    const { loading: productAttributeItemsLoading, error: productAttributeItemsError, data: productAttributeItemsData } = useQuery(GET_PRODUCT_ATTRIBUTE_ITEMS);
+    const {data: currencyData } = useQuery(GET_CURRENCY);
     const [products, setProducts] = useState([]);
-    const [getProductAttributes, { data: productAttributesData }] = useLazyQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID, {
-        onCompleted: data => {
-            const product = products.find(product => product.id === data.attributeItemsByProductId[1].product_id);
-            if (product) {
-                const attributes = data.attributeItemsByProductId;
-                dispatch(addToCart({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    currency: product.currency,
-                    image: product.gallery[0]?.image_url,
-                    quantity: 1,
-                    attributes: attributes
-                }));
-            }
-        }
-    });
-
-    function toKebabCase(str) {
-        return str
-            .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-            .join('-')
-            .toLowerCase();
-    }
+    const [getProductAttributes] = useLazyQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID);
 
     useEffect(() => {
         if (productsData && galleryData && pricesData && currencyData) {
@@ -73,10 +46,30 @@ export function ProductList() {
 
     const filteredProducts = categoryId === '1' ? products : products.filter(product => product.category_id === parseInt(categoryId));
 
-    const handleAddToCart = (product) => {
-        const productAttributes = productAttributeItemsData.attributeItems.filter(item => item.product_id === product.id);
-        if (productAttributes.length > 0) {
-            getProductAttributes({ variables: { productId: product.id } });
+    const handleAddToCart = async (product) => {
+        const { data } = await getProductAttributes({ variables: { productId: product.id } });
+        if (data && data.attributeItemsByProductId) {
+            const attributes = data.attributeItemsByProductId;
+            const groupedAttributes = attributes.reduce((acc, attr) => {
+                if (!acc[attr.attribute_id]) {
+                    acc[attr.attribute_id] = [];
+                }
+                acc[attr.attribute_id].push(attr);
+                return acc;
+            }, {});
+            const selectedAttributes = Object.values(groupedAttributes).map(attrs => attrs.map((attr, index) => ({
+                ...attr,
+                selected: index === 0 // Only select the first attribute item of each attribute
+            }))).flat();
+            dispatch(addToCart({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                currency: product.currency,
+                image: product.gallery[0]?.image_url,
+                quantity: 1,
+                attributes: selectedAttributes
+            }));
         } else {
             dispatch(addToCart({
                 id: product.id,
@@ -89,6 +82,13 @@ export function ProductList() {
             }));
         }
     };
+
+    function toKebabCase(str) {
+        return str
+            .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+            .join('-')
+            .toLowerCase();
+    }
 
     return (
         <div className="products-grid">

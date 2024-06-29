@@ -2,12 +2,13 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\GraphQL\Types\OrderItemType;
 use App\Models\Order;
 use App\Models\OrderItem;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use App\GraphQL\Types\OrderType;
-use App\GraphQL\Types\OrderItemType;
 use App\Services\OrderService;
 use App\Services\OrderItemService;
 
@@ -31,10 +32,19 @@ class MutationType extends ObjectType {
                     'args' => [
                         'order_id' => Type::nonNull(Type::int()),
                         'product_id' => Type::nonNull(Type::string()),
+                        'attribute_id' => Type::string(),
+                        'attribute_item_id' => Type::string(),
                         'quantity' => Type::nonNull(Type::int()),
                     ],
                     'resolve' => function($root, $args) use ($orderItemService) {
-                        $orderItem = new OrderItem(null, $args['order_id'], $args['product_id'], $args['quantity'], $args['attribute_id'], $args['attribute_item_id']);
+                        $orderItem = new OrderItem(
+                            null,
+                            $args['order_id'],
+                            $args['product_id'],
+                            $args['attribute_id'] ?? null,
+                            $args['attribute_item_id'] ?? null,
+                            $args['quantity']
+                        );
                         return $orderItemService->createOrderItem($orderItem);
                     }
                 ],

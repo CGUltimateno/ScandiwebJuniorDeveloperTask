@@ -4,10 +4,8 @@ namespace App\GraphQL\Types;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
 
-class AttributesItemType extends ObjectType
-{
-    public function __construct()
-    {
+class AttributesItemType extends ObjectType {
+    public function __construct() {
         $config = [
             'name' => 'AttributesItem',
             'fields' => [

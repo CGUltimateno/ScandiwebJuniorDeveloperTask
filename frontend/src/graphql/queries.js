@@ -127,11 +127,25 @@ export const GET_CURRENCY = gql`
     }
     `;
 
-export const CREATE_ORDER_WITH_ITEMS = gql`
-    mutation CreateOrderWithItems($total: Float!, $items: [OrderItemInput!]!) {
-        createOrderWithItems(total: $total, items: $items) {
+
+export const CREATE_ORDER = gql`
+    mutation CreateOrder($total: Float!) {
+        createOrderWithItems(total: $total) {
             id
             total
+        }
+    }
+`;
+
+export const CREATE_ORDER_ITEM = gql`
+    mutation CreateOrderItem($order_id: Int!, $product_id: String!, $attribute_id: String, $attribute_item_id: String, $quantity: Int!) {
+        createOrderItem(order_id: $order_id, product_id: $product_id, attribute_id: $attribute_id, attribute_item_id: $attribute_item_id, quantity: $quantity) {
+            id
+            order_id
+            product_id
+            attribute_id
+            attribute_item_id
+            quantity
         }
     }
 `;
