@@ -1,4 +1,3 @@
-/* Overlay styling */
 .overlay {
     position: fixed;
     top: 60px;
@@ -9,7 +8,7 @@
     z-index: 10;
 }
 
-/* Cart overlay container */
+
 .cartOverlay {
     position: fixed;
     top: 60px;
@@ -23,7 +22,6 @@
     flex-direction: column;
 }
 
-/* Cart header */
 .cartHeader {
     display: flex;
     justify-content: space-between;
@@ -46,7 +44,6 @@
     cursor: pointer;
 }
 
-/* Cart items container */
 .cartItems {
     flex-grow: 1;
 }
@@ -132,7 +129,6 @@
     outline: 1px solid #00f086;
     outline-offset: 1px;
 }
-/* Cart item quantity */
 .cartItemQuantity {
     display: flex;
     flex-direction: column;
@@ -154,7 +150,7 @@
     margin-left: 20px;
 }
 
-/* Cart footer */
+
 .cartFooter {
     margin-top: 20px;
 }

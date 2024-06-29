@@ -12,6 +12,7 @@ import {
 } from "../graphql/queries";
 import { connect } from "react-redux";
 import './ProductDetails.css';
+import parse from 'html-react-parser';
 
 function ProductDetails({ addToCart }) {
     const { productId } = useParams();
@@ -150,7 +151,6 @@ function ProductDetails({ addToCart }) {
                         </div>
                     )}
                 </div>
-
             </div>
             <div className="product-info">
                 <h1>{product.name}</h1>
@@ -198,9 +198,7 @@ function ProductDetails({ addToCart }) {
                     ADD TO CART
                 </button>
                 <div className="product-description" data-testid="product-description">
-                    {product.description.split('\n').map((line, index) => (
-                        <p key={index}>{line}</p>
-                    ))}
+                    {parse(product.description)}
                 </div>
             </div>
         </div>
@@ -209,7 +207,7 @@ function ProductDetails({ addToCart }) {
 
 const mapDispatchToProps = {
     addToCart: (item) => {
-        console.log(item); // This will log the item
+        console.log(item);
         return addToCart(item);
     },
 };

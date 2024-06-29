@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Categories;
 
 use App\Models\Abstracts\AbstractCategory;
 

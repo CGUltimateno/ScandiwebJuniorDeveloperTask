@@ -59,7 +59,7 @@ export function ProductList() {
             }, {});
             const selectedAttributes = Object.values(groupedAttributes).map(attrs => attrs.map((attr, index) => ({
                 ...attr,
-                selected: index === 0 // Only select the first attribute item of each attribute
+                selected: index === 0
             }))).flat();
             dispatch(addToCart({
                 id: product.id,
