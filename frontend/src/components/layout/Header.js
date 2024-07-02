@@ -15,7 +15,7 @@ const Header = () => {
     const location = useLocation();
     const CategoryName = location.pathname.split('/')[1];
     const { loading, error, data } = useQuery(GET_CATEGORIES);
-    const [setCategoryId] = useState(location.pathname.split('/')[1]);
+    const [categoryId, setCategoryId] = useState(location.pathname.split('/')[1]);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const cartItems = useSelector((state) => state.cart.items);
