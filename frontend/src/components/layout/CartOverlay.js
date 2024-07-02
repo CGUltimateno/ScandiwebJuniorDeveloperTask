@@ -10,7 +10,7 @@ const CartOverlay = ({ onClose }) => {
     const cartItems = useSelector((state) => state.cart.items);
     const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
     const [cartIsOpen, setCartIsOpen] = useState(true);
-
+    const totalItems = cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0);
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
 
@@ -88,7 +88,7 @@ const CartOverlay = ({ onClose }) => {
                 <div className={styles.cartHeader}>
                     <div className={styles.cartTitleContainer}>
                         <h2 className={styles.cartTitle}>My Bag,</h2>
-                        <h2 className={styles.CartCount}>{cartItems.length} {cartItems.length === 1 ? 'Item' : 'Items'}</h2>
+                        <h2 className={styles.CartCount}>{`${totalItems} ${totalItems === 1 ? 'Item' : 'Items'}`}</h2>
                     </div>
                     <button onClick={handleClose} className={styles.closeBtn}>&times;</button>
                 </div>
