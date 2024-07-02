@@ -163,7 +163,7 @@ function ProductDetails({ addToCart }) {
                                     <button key={item.value}
                                             className={`attribute-option${attribute.type === "swatch" ? "color-options" && "": ""} ${isSelected ? "selected" : ""}`}
                                             onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                            data-testid={attribute.type === "swatch" ? `cart-item-attribute-color-${(item.display_value.toUpperCase()[0] + item.display_value.slice(1))}${isSelected ? '-selected' : ''}` : `product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                            data-testid={attribute.type === "swatch" ? `product-item-attribute-color-${(item.display_value.toUpperCase()[0] + item.display_value.slice(1))}${isSelected ? '-selected' : ''}` : `product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
                                         {attribute.type === "swatch" ? (<span className="color-swatch swatch"
                                                                               style={{backgroundColor: item.value}}></span>) : (item.value)}
                                     </button>
