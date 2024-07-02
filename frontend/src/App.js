@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import client from './apolloClient';
+import client from './graphql/apolloClient';
 import store from './redux/store';
 import Header from './components/layout/Header';
 import ProductsPage from './pages/ProductsPage';

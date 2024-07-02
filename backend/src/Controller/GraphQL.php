@@ -64,24 +64,17 @@ class GraphQL {
                 throw new RuntimeException('Failed to get php://input');
             }
 
-            error_log("Raw input: " . $rawInput, 3, 'error.log');
 
             $input = json_decode($rawInput, true);
-            error_log("Decoded input: " . print_r($input, true), 3, 'error.log');
 
             $query = $input['query'];
             $variableValues = $input['variables'] ?? null;
 
-            error_log("Query: " . $query, 3, 'error.log');
-            error_log("Variable values: " . print_r($variableValues, true), 3, 'error.log');
 
             $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
-            error_log("Execution result: " . print_r($result, true), 3, 'error.log');
 
             $output = $result->toArray();
         } catch (Throwable $e) {
-            error_log('GraphQL Error: ' . $e->getMessage(), 3, 'error.log');
-            error_log('Stack trace: ' . $e->getTraceAsString(), 3, 'error.log');
             $output = [
                 'error' => [
                     'message' => $e->getMessage(),
