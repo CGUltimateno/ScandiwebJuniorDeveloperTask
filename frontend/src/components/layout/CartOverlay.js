@@ -153,7 +153,8 @@ const CartOverlay = ({ onClose }) => {
                         <span>Total</span>
                         <span className={styles.cartTotalPrice}>${totalAmount}</span>
                     </div>
-                    <button className={styles.placeOrderBtn} disabled={cartItems.length === 0} onClick={handlePlaceOrder}>
+                    <button className={`${styles.placeOrderBtn} your-new-class`} disabled={cartItems.length === 0}
+                            onClick={handlePlaceOrder} data-testid="place-order-btn">
                         PLACE ORDER
                     </button>
                 </div>
