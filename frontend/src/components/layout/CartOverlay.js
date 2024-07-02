@@ -84,7 +84,7 @@ const CartOverlay = ({ onClose }) => {
     return (
         <>
             {cartIsOpen && <div className={styles.overlay} onClick={handleClose}></div>}
-            <div className={styles.cartOverlay}>
+            <div className={styles.cartOverlay} data-testid="cart-overlay">
                 <div className={styles.cartHeader}>
                     <div className={styles.cartTitleContainer}>
                         <h2 className={styles.cartTitle}>My Bag,</h2>
