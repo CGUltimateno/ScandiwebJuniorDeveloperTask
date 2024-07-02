@@ -16,8 +16,8 @@ class App extends React.Component {
                     <Router>
                         <Header />
                         <Routes>
-                            <Route path="/" element={<Navigate to="/1" />} />
-                            <Route path="/:categoryId" element={<ProductsPage />} />
+                            <Route path="/" element={<Navigate to="/all" />} />
+                            <Route path="/:CategoryName" element={<ProductsPage />} />
                             <Route path="/product/:productId" element={<ProductDetails />} />
                         </Routes>
                     </Router>

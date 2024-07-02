@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useQuery } from '@apollo/client';
-import { Link, useLocation } from 'react-router-dom';
+import {Link, useLocation, useParams} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories } from '../../redux/reducers/categorySlice';
 import { GET_CATEGORIES } from '../../graphql/queries';
@@ -12,10 +12,12 @@ import CartOverlay from './CartOverlay';
 
 const Header = () => {
     const dispatch = useDispatch();
-    const { loading, error, data } = useQuery(GET_CATEGORIES);
     const location = useLocation();
+    const CategoryName = location.pathname.split('/')[1];
+    const { loading, error, data } = useQuery(GET_CATEGORIES);
     const [categoryId, setCategoryId] = useState(location.pathname.split('/')[1]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
     const cartItems = useSelector((state) => state.cart.items);
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -32,16 +34,15 @@ const Header = () => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :(</p>;
-
     return (
         <header className="header">
             <nav className="nav">
                 {data.categories.map(({ id, name }) => (
                     <Link
                         key={id}
-                        to={`/${id}`}
-                        className={`nav-link ${id.toString() === categoryId ? 'active-link' : ''}`}
-                        data-testid={id.toString() === categoryId ? 'active-category-link' : 'category-link'}
+                        to={`/${name.toLowerCase().replace(/ /g, '-')}`}
+                        className={`nav-link ${name.toLowerCase().replace(/ /g, '-') === CategoryName ? 'active-link' : ''}`}
+                        data-testid={name.toLowerCase().replace(/ /g, '-') === CategoryName ? 'active-category-link' : 'category-link'}
                     >
                         {name.toUpperCase()}
                     </Link>
