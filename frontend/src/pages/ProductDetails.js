@@ -93,15 +93,19 @@ function ProductDetails({ addToCart }) {
     }
 
     const handleAttributeChange = (attributeId, value) => {
-        setSelectedAttributes({
-            ...selectedAttributes,
-            [attributeId]: value
-        });
+        setSelectedAttributes((prevSelectedAttributes) => ({
+            ...prevSelectedAttributes,
+            [attributeId]: value,
+        }));
+        console.log("Selected attributes updated:", selectedAttributes);
     };
 
     const isAddToCartDisabled = product.attributes.some(
         (attr) => !selectedAttributes[attr.id]
     ) || product.in_stock === false;
+
+    console.log("isAddToCartDisabled:", isAddToCartDisabled);
+    console.log("selectedAttributes:", selectedAttributes);
 
     function toKebabCase(str) {
         return str.replace(/\s+/g, '-').toLowerCase();
@@ -163,11 +167,11 @@ function ProductDetails({ addToCart }) {
                                     <button key={item.value}
                                             className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
                                             onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                            data-testid={`product-attribute-${(toKebabCase(attribute.name))}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                            data-testid={`product-attribute-${toKebabCase(attribute.name)}-${toKebabCase(item.display_value)}${isSelected ? '-selected' : ''}`}>
                                         {attribute.type === "swatch" ? (
                                             <span className="color-swatch swatch"
                                                   style={{backgroundColor: item.value}}
-                                                  data-testid={`product-attribute-${(attribute.name)}-${(item.value)}${isSelected ? '-selected' : ''}`}></span>
+                                                  data-testid={`product-attribute-${toKebabCase(attribute.name)}-${toKebabCase(item.value)}${isSelected ? '-selected' : ''}`}></span>
                                         ) : (
                                             item.value
                                         )}

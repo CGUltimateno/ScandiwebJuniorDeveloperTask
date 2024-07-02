@@ -118,7 +118,7 @@ const CartOverlay = ({ onClose }) => {
                                                             <span key={`${option.attribute_id}-${option.value}`}
                                                                   className={`${key === "Color" ? styles.colorSwatch : styles.attributeOption} ${selectedOption?.value === option.value ? styles.selected : ""}`}
                                                                   style={key === "Color" ? {backgroundColor: option.value} : {}}
-                                                                  data-testid={`cart-item-attribute-${kebabCaseKey}-${option.value.toLowerCase().replace(/ /g, '-')}${selectedOption?.value === option.value ? '-selected' : ''}`}>
+                                                                  data-testid={`cart-item-attribute-${kebabCaseKey}-${option.display_value.replace(/ /g, '-')}${selectedOption?.value === option.value ? '-selected' : ''}`}>
                                                           {key !== "Color" && option.value}
                                                     </span>
                                                         ))}

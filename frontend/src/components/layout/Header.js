@@ -53,7 +53,7 @@ const Header = () => {
             <div className="cart-container">
                 <button className="cart-btn" onClick={() => setIsCartOpen(!isCartOpen)} data-testid="cart-btn">
                     <FontAwesomeIcon icon={faShoppingCart} />
-                    {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
+                    {totalItems > 0 && <span className="cart-count" data-testid="cart-count-bubble">{totalItems}</span>}
                 </button>
                 {isCartOpen && <CartOverlay onClose={() => setIsCartOpen(false)} />}
             </div>

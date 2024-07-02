@@ -40,6 +40,9 @@
   position: relative;
 }
 
+.cart-count-bubble{
+  color: black;
+}
 .cart-btn {
   background: none;
   border: none;
