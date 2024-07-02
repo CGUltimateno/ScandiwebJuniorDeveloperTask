@@ -60,7 +60,7 @@ function ProductDetails({ addToCart }) {
                 ...attr,
                 items: Object.values(uniqueAttributeItems).filter(item => item.attribute_id === attr.id)
             }));
-            console.log(groupedAttributes)
+
             setProductDetails({
                 ...product,
                 attributes: groupedAttributes,
@@ -161,11 +161,16 @@ function ProductDetails({ addToCart }) {
                                 const isSelected = selectedAttributes[attribute.id] === item.value;
                                 return (
                                     <button key={item.value}
-                                            className={`attribute-option${attribute.type === "swatch" ? "color-options" && "": ""} ${isSelected ? "selected" : ""}`}
+                                            className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
                                             onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                            data-testid={attribute.type === "swatch" ? `product-item-attribute-color-${(item.display_value.toUpperCase()[0] + item.display_value.slice(1))}${isSelected ? '-selected' : ''}` : `product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
-                                        {attribute.type === "swatch" ? (<span className="color-swatch swatch"
-                                                                              style={{backgroundColor: item.value}}></span>) : (item.value)}
+                                            data-testid={`product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                        {attribute.type === "swatch" ? (
+                                            <span className="color-swatch swatch"
+                                                  style={{backgroundColor: item.value}}
+                                                  data-testid={`product-attribute-${(attribute.name)}-${(item.value)}${isSelected ? '-selected' : ''}`}></span>
+                                        ) : (
+                                            item.value
+                                        )}
                                     </button>
                                 );
                             })}
@@ -174,7 +179,7 @@ function ProductDetails({ addToCart }) {
                 ))}
                 <div className="product-price">
                     <h3 className="title">PRICE:</h3>
-                    <p className="price">{product.prices[0].currency.symbol}{product.prices[0].amount.toFixed(2)}</p>
+                    <p className="price">{product.prices[0].currency.symbol} {product.prices[0].amount.toFixed(2)}</p>
                 </div>
                 <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`}
                         onClick={() => {
