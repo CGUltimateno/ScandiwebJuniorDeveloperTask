@@ -15,14 +15,13 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { addToCart } from '../../redux/actions/cartActions';
 import './ProductList.css';
 
-export function ProductList() {
-    const { CategoryName } = useParams();
+export function ProductList({ effectiveCategoryName }) {
     const dispatch = useDispatch();
     const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
     const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES);
     const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICES);
-    const {data: currencyData } = useQuery(GET_CURRENCY);
-    const {data: categoriesData } = useQuery(GET_CATEGORIES);
+    const { data: currencyData } = useQuery(GET_CURRENCY);
+    const { data: categoriesData } = useQuery(GET_CATEGORIES);
     const [products, setProducts] = useState([]);
     const [getProductAttributes] = useLazyQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID);
 
@@ -46,8 +45,9 @@ export function ProductList() {
         return <p>Error :(</p>;
     }
 
-    const category = categoriesData.categories.find(category => category.name.toLowerCase() === CategoryName);
-    const filteredProducts = CategoryName === 'all' ? products : products.filter(product => product.category_id === category.id);
+    const category = categoriesData.categories.find(category => category.name.toLowerCase() === effectiveCategoryName);
+    const filteredProducts = effectiveCategoryName === 'all' ? products : products.filter(product => product.category_id === category.id);
+
     const handleAddToCart = async (product) => {
         const { data } = await getProductAttributes({ variables: { productId: product.id } });
         if (data && data.attributeItemsByProductId) {
