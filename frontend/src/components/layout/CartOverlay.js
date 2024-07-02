@@ -94,7 +94,7 @@ const CartOverlay = ({ onClose }) => {
                 <div className={styles.cartHeader}>
                     <div className={styles.cartTitleContainer}>
                         <h2 className={styles.cartTitle}>My Bag,</h2>
-                        <h2 className={styles.CartCount}>{`${totalItems} ${totalItems === 1 ? 'Item' : 'Items'}`}</h2>
+                        <h2 className={styles.CartCount}>{`${totalItems} ${totalItems === 1 ? 'item' : 'items'}`}</h2>
                     </div>
                     <button onClick={handleClose} className={styles.closeBtn}>&times;</button>
                 </div>
