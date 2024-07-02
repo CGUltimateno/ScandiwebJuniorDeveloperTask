@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useQuery } from '@apollo/client';
-import {Link, useLocation, useParams} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories } from '../../redux/reducers/categorySlice';
 import { GET_CATEGORIES } from '../../graphql/queries';
@@ -15,7 +15,7 @@ const Header = () => {
     const location = useLocation();
     const CategoryName = location.pathname.split('/')[1];
     const { loading, error, data } = useQuery(GET_CATEGORIES);
-    const [categoryId, setCategoryId] = useState(location.pathname.split('/')[1]);
+    const [setCategoryId] = useState(location.pathname.split('/')[1]);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const cartItems = useSelector((state) => state.cart.items);
