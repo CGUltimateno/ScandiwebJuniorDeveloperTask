@@ -157,15 +157,18 @@ function ProductDetails({ addToCart }) {
                     >
                         <h3 className="title">{attribute.name.toUpperCase()}:</h3>
                         <div className="attribute-options">
-                            {attribute.items.map((item) => (
-                                <button key={item.value}
-                                        className={`attribute-option ${attribute.type === "swatch" ? "color-options" && "": ""} ${selectedAttributes[attribute.id] === item.value ? "selected" : ""}`}
-                                        onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                        data-testid={attribute.type === "swatch" ? `cart-item-attribute-color-${(item.display_value)}` : `product-attribute-${toKebabCase(attribute.name)}-${toKebabCase(item.display_value)}`}>
-                                    {attribute.type === "swatch" ? (<span className="color-swatch swatch"
-                                                                          style={{backgroundColor: item.value}}></span>) : (item.value)}
-                                </button>
-                            ))}
+                            {attribute.items.map((item) => {
+                                const isSelected = selectedAttributes[attribute.id] === item.value;
+                                return (
+                                    <button key={item.value}
+                                            className={`attribute-option${attribute.type === "swatch" ? "color-options" && "": ""} ${isSelected ? "selected" : ""}`}
+                                            onClick={() => handleAttributeChange(attribute.id, item.value)}
+                                            data-testid={attribute.type === "swatch" ? `cart-item-attribute-color-${(item.display_value.toUpperCase()[0] + item.display_value.slice(1))}${isSelected ? '-selected' : ''}` : `product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                        {attribute.type === "swatch" ? (<span className="color-swatch swatch"
+                                                                              style={{backgroundColor: item.value}}></span>) : (item.value)}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 ))}
