@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { incrementItem, decrementItem, removeItem, clearCart } from '../../redux/actions/cartActions';
@@ -13,6 +13,11 @@ const CartOverlay = ({ onClose }) => {
     const totalItems = cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0);
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
+
+    useEffect(() => {
+        console.log("Cart items:", cartItems);
+        console.log("Total items:", totalItems);
+    }, [cartItems, totalItems]);
 
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
@@ -66,6 +71,7 @@ const CartOverlay = ({ onClose }) => {
             console.error("Error placing order:", error);
         }
     };
+
     function groupAttributesByAttributeId(attributes) {
         if (!Array.isArray(attributes)) {
             console.error('attributes is not an array:', attributes);
