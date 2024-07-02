@@ -108,7 +108,7 @@ function ProductDetails({ addToCart }) {
     }
 
     return (
-        <div className="product-details">
+        <div className="product-details" data-testid={`product-${toKebabCase(product.name)}`}>
             <div className="product-gallery" data-testid="product-gallery">
                 <div className="thumbnails">
                     {product.gallery.map((image, index) => (
@@ -163,7 +163,7 @@ function ProductDetails({ addToCart }) {
                                     <button key={item.value}
                                             className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
                                             onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                            data-testid={`product-attribute-${(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                            data-testid={`product-attribute-${(toKebabCase(attribute.name))}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
                                         {attribute.type === "swatch" ? (
                                             <span className="color-swatch swatch"
                                                   style={{backgroundColor: item.value}}
