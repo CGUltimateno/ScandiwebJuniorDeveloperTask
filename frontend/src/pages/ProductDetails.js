@@ -97,15 +97,11 @@ function ProductDetails({ addToCart }) {
             ...prevSelectedAttributes,
             [attributeId]: value,
         }));
-        console.log("Selected attributes updated:", selectedAttributes);
     };
 
     const isAddToCartDisabled = product.attributes.some(
         (attr) => !selectedAttributes[attr.id]
     ) || product.in_stock === false;
-
-    console.log("isAddToCartDisabled:", isAddToCartDisabled);
-    console.log("selectedAttributes:", selectedAttributes);
 
     function toKebabCase(str) {
         return str.replace(/\s+/g, '-').toLowerCase();
@@ -219,7 +215,6 @@ function ProductDetails({ addToCart }) {
 
 const mapDispatchToProps = {
     addToCart: (item) => {
-        console.log(item);
         return addToCart(item);
     },
 };

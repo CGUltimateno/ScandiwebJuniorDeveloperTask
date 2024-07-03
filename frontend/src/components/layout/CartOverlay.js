@@ -14,8 +14,6 @@ const CartOverlay = ({ onClose }) => {
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
     useEffect(() => {
-        console.log("Cart items:", cartItems);
-        console.log("Total items:", totalItems);
     }, [cartItems, totalItems]);
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));

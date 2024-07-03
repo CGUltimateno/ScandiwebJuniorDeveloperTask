@@ -8,7 +8,6 @@ import './ProductsPage.css';
 const ProductsPage = () => {
     const { CategoryName } = useParams();
     const effectiveCategoryName = CategoryName || 'all';
-    console.log(effectiveCategoryName);
     const { loading, error, data } = useQuery(GET_CATEGORIES);
 
     if (loading) return <p>Loading...</p>;
