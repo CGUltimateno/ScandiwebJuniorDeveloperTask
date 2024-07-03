@@ -13,12 +13,10 @@ const CartOverlay = ({ onClose }) => {
     const totalItems = cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0);
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
-console.log(cartItems[0].currency)
     useEffect(() => {
         console.log("Cart items:", cartItems);
         console.log("Total items:", totalItems);
     }, [cartItems, totalItems]);
-
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
     };
@@ -151,7 +149,8 @@ console.log(cartItems[0].currency)
                 <div className={styles.cartFooter}>
                     <div className={styles.cartTotal} data-testid='cart-total'>
                         <span>Total</span>
-                        <span className={styles.cartTotalPrice}>{`${cartItems[0]?.currency} ${totalAmount}`}</span>
+                        <span
+                            className={styles.cartTotalPrice}>{`${cartItems.length > 0 ? cartItems[0].currency : '$'} ${totalAmount}`}</span>
                     </div>
                     <button className={`${styles.placeOrderBtn} your-new-class`} disabled={cartItems.length === 0}
                             onClick={handlePlaceOrder} data-testid="place-order-btn">
