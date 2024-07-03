@@ -109,7 +109,7 @@ export function ProductList({ effectiveCategoryName }) {
                     <div className='product-info' data-testid={`product-${toKebabCase(product.name)}`}>
                         <Link to={`/product/${product.id}`}>
                             <h3 className="product-name">{product.name}</h3>
-                            <p className="product-price">{product.currency}{product.price}</p>
+                            <p className="product-price">{`${product.currency} ${product.price}`}</p>
                         </Link>
                     </div>
                 </div>
