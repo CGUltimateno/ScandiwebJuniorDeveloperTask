@@ -93,9 +93,11 @@ export function ProductList({ effectiveCategoryName }) {
         <div className="products-grid">
             {Array.isArray(filteredProducts) && filteredProducts.map((product) => (
                 <div className='product-card' key={product.id} data-testid={`product-${toKebabCase(product.name)}`}>
-                    <div className='product-img'>
+                    <div className='product-img' data-testid={`product-${toKebabCase(product.name)}`}>
                         <Link to={`/product/${product.id}`}>
-                            {product.gallery[0] && <img src={product.gallery[0].image_url} alt={product.name} className="product-image" />}
+                            {product.gallery[0] &&
+                                <img src={product.gallery[0].image_url} alt={product.name} className="product-image"
+                                     data-testid={`product-${toKebabCase(product.name)}`}/>}
                             {!product.in_stock && <div className="out-of-stock">OUT OF STOCK</div>}
                         </Link>
                         {product.in_stock && (
@@ -104,7 +106,7 @@ export function ProductList({ effectiveCategoryName }) {
                             </button>
                         )}
                     </div>
-                    <div className='product-info'>
+                    <div className='product-info' data-testid={`product-${toKebabCase(product.name)}`}>
                         <Link to={`/product/${product.id}`}>
                             <h3 className="product-name">{product.name}</h3>
                             <p className="product-price">{product.currency}{product.price}</p>

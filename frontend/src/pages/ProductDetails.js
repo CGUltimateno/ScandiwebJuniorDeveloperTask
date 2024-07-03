@@ -183,7 +183,9 @@ function ProductDetails({ addToCart }) {
                 ))}
                 <div className="product-price">
                     <h3 className="title">PRICE:</h3>
-                    <p className="price">{product.prices[0].currency.symbol} {product.prices[0].amount.toFixed(2)}</p>
+                    <p className="product-price">
+                        {`${product.prices[0].currency.symbol}${product.prices[0].amount.toFixed(2)}`}
+                    </p>
                 </div>
                 <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`}
                         onClick={() => {
