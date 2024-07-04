@@ -2,7 +2,8 @@ import {
     ADD_TO_CART,
     INCREMENT_ITEM,
     DECREMENT_ITEM,
-    REMOVE_ITEM, CLEAR_CART,
+    REMOVE_ITEM,
+    CLEAR_CART,
 } from '../actions/cartActions';
 
 const initialState = {
@@ -48,7 +49,7 @@ const cartReducer = (state = initialState, action) => {
         case REMOVE_ITEM:
             return {
                 ...state,
-                items: state.items.filter((item) => item.id !== action.payload)
+                items: state.items.filter((item) => !(item.id === action.payload.id && JSON.stringify(item.attributes) === JSON.stringify(action.payload.attributes)))
             };
         case CLEAR_CART:
             return {

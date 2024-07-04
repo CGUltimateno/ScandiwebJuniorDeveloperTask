@@ -15,16 +15,18 @@ const CartOverlay = ({ onClose }) => {
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
     useEffect(() => {
     }, [cartItems, totalItems]);
+
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
     };
 
-    const handleDecrement = (id) => {
-        const item = cartItems.find((item) => item.id === id);
+    const handleDecrement = (id, attributes) => {
+        const item = cartItems.find((item) => item.id === id && JSON.stringify(item.attributes) === JSON.stringify(attributes));
         if (item.quantity > 1) {
             dispatch(decrementItem(id));
         } else {
-            dispatch(removeItem(id));
+            // Adjusted to pass both id and attributes for the removeItem action
+            dispatch(removeItem({id, attributes}));
         }
     };
 
@@ -135,7 +137,7 @@ const CartOverlay = ({ onClose }) => {
                                             data-testid='cart-item-amount-increase'>+
                                     </button>
                                     <span data-testid='cart-item-amount'>{item.quantity}</span>
-                                    <button onClick={() => handleDecrement(item.id)}
+                                    <button onClick={() => handleDecrement(item.id, item.attributes)}
                                             data-testid='cart-item-amount-decrease'>-
                                     </button>
                                 </div>

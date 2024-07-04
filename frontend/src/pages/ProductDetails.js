@@ -141,32 +141,37 @@ function ProductDetails({ addToCart }) {
             </div>
             <div className="product-info">
                 <h1>{product.name}</h1>
-                {product.attributes.map((attribute) => (
-                    <div key={attribute.id} className="product-attribute"
-                         data-testid={`product-attribute-${toKebabCase(attribute.name)}`}
-                    >
-                        <h3 className="title">{attribute.name.toUpperCase()}:</h3>
-                        <div className="attribute-options">
-                            {attribute.items.map((item) => {
-                                const isSelected = selectedAttributes[attribute.id] === item.value;
-                                return (
-                                    <button key={item.value}
-                                            className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
-                                            onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                            data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
-                                        {attribute.type === "swatch" ? (
-                                            <span className="color-swatch swatch"
-                                                  style={{backgroundColor: item.value}}
-                                                  data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.value)}${isSelected ? '-selected' : ''}`}></span>
-                                        ) : (
-                                            item.value
-                                        )}
-                                    </button>
-                                );
-                            })}
+                {product.attributes.map((attribute) => {
+                    if (attribute.type === "swatch" && attribute.name.toLowerCase() !== "color") {
+                        return null;
+                    }
+                    return (
+                        <div key={attribute.id} className="product-attribute"
+                             data-testid={`product-attribute-${toKebabCase(attribute.name)}`}
+                        >
+                            <h3 className="title">{attribute.name.toUpperCase()}:</h3>
+                            <div className="attribute-options">
+                                {attribute.items.map((item) => {
+                                    const isSelected = selectedAttributes[attribute.id] === item.value;
+                                    return (
+                                        <button key={item.value}
+                                                className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
+                                                onClick={() => handleAttributeChange(attribute.id, item.value)}
+                                                data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                            {attribute.type === "swatch" ? (
+                                                <span className="color-swatch swatch"
+                                                      style={{backgroundColor: item.value}}
+                                                      data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.value)}${isSelected ? '-selected' : ''}`}></span>
+                                            ) : (
+                                                item.value
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
                 <div className="product-price">
                     <h3 className="title">PRICE:</h3>
                     <p className="product-price">

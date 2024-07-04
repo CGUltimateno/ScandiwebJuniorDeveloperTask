@@ -21,9 +21,9 @@ export const decrementItem = (id) => ({
     payload: id
 });
 
-export const removeItem = (id) => ({
+export const removeItem = ({id, attributes}) => ({
     type: REMOVE_ITEM,
-    payload: id
+    payload: {id, attributes}
 });
 
 export const clearCart = () => ({

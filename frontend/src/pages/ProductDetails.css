@@ -82,12 +82,12 @@
     cursor: pointer;
 }
 
-.color-options {
+.color-option {
     padding: 1px 1px 1px 1px;
     line-height: 1;
 }
 
-.attribute-option.color-options.selected {
+.attribute-option.color-option.selected {
     border: 1px solid #00de7f;
     background-color: white;
 }

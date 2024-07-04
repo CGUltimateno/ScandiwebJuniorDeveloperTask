@@ -2,9 +2,15 @@
 
 namespace App\Controller;
 
+use App\GraphQL\TypeRegistry;
+use App\GraphQL\Types\AttributesItemType;
+use App\GraphQL\Types\AttributeType;
 use App\GraphQL\Types\CategoryType;
+use App\GraphQL\Types\CurrencyType;
+use App\GraphQL\Types\GalleryType;
 use App\GraphQL\Types\OrderItemType;
 use App\GraphQL\Types\OrderType;
+use App\GraphQL\Types\PriceType;
 use App\GraphQL\Types\ProductType;
 use App\Repositories\AttributesItemRepository;
 use App\Repositories\AttributesRepository;
@@ -15,9 +21,6 @@ use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ProductRepository;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
 use App\GraphQL\Queries\QueryType;
@@ -37,6 +40,19 @@ use Throwable;
 class GraphQL {
     static public function handle() {
         try {
+            $typeRegistry = new TypeRegistry();
+
+            // Register all necessary types
+            $typeRegistry->register('ProductType', new ProductType());
+            $typeRegistry->register('CategoryType', new CategoryType());
+            $typeRegistry->register('AttributeType', new AttributeType());
+            $typeRegistry->register('AttributesItemType', new AttributesItemType());
+            $typeRegistry->register('GalleryType', new GalleryType());
+            $typeRegistry->register('PriceType', new PriceType());
+            $typeRegistry->register('CurrencyType', new CurrencyType());
+            $typeRegistry->register('OrderType', new OrderType());
+            $typeRegistry->register('OrderItemType', new OrderItemType());
+
             $productService = new ProductService(new ProductRepository());
             $categoryService = new CategoryService(new CategoryRepository());
             $attributeService = new AttributesService(new AttributesRepository());
@@ -46,12 +62,21 @@ class GraphQL {
             $currencyService = new CurrencyService(new CurrencyRepository());
             $orderService = new OrderService(new OrderRepository());
             $orderItemService = new OrderItemService(new OrderItemRepository());
-            $productType = new ProductType();
-            $orderType = new OrderType();
-            $orderItemType = new OrderItemType();
 
-            $queryType = new QueryType($productType, $productService, $categoryService, $attributeService, $attributeItemsService, $galleryService, $priceService, $currencyService);
-            $mutationType = new MutationType($orderService, $orderItemService, $orderType, $orderItemType);
+            $services = [
+                'productService' => $productService,
+                'categoryService' => $categoryService,
+                'attributeService' => $attributeService,
+                'attributeItemsService' => $attributeItemsService,
+                'galleryService' => $galleryService,
+                'priceService' => $priceService,
+                'currencyService' => $currencyService,
+                'orderService' => $orderService,
+                'orderItemService' => $orderItemService,
+            ];
+
+            $queryType = new QueryType($typeRegistry, $services);
+            $mutationType = new MutationType($typeRegistry, $services);
 
             $schema = new Schema(
                 (new SchemaConfig())
@@ -71,7 +96,7 @@ class GraphQL {
             $variableValues = $input['variables'] ?? null;
 
 
-            $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
+            $result = \GraphQL\GraphQL::executeQuery($schema, $query, null, null, $variableValues);
 
             $output = $result->toArray();
         } catch (Throwable $e) {

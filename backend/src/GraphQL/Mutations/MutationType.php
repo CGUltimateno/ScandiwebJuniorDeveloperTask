@@ -2,33 +2,28 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\GraphQL\Types\OrderItemType;
 use App\Models\Order;
 use App\Models\OrderItem;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\OrderType;
-use App\Services\OrderService;
-use App\Services\OrderItemService;
 
 class MutationType extends ObjectType {
-    public function __construct(OrderService $orderService, OrderItemService $orderItemService, OrderType $orderType, OrderItemType $orderItemType) {
+    public function __construct($typeRegistry, $services) {
         $config = [
             'name' => 'Mutation',
             'fields' => [
                 'createOrderWithItems' => [
-                    'type' => $orderType,
+                    'type' => $typeRegistry->get('OrderType'),
                     'args' => [
                         'total' => Type::nonNull(Type::float()),
                     ],
-                    'resolve' => function($root, $args) use ($orderService) {
+                    'resolve' => function($root, $args) use ($services) {
                         $order = new Order(null, $args['total'], null, null);
-                        return $orderService->createOrder($order);
+                        return $services['orderService']->createOrder($order);
                     }
                 ],
                 'createOrderItem' => [
-                    'type' => $orderItemType,
+                    'type' => $typeRegistry->get('OrderItemType'),
                     'args' => [
                         'order_id' => Type::nonNull(Type::int()),
                         'product_id' => Type::nonNull(Type::string()),
@@ -36,7 +31,7 @@ class MutationType extends ObjectType {
                         'attribute_item_id' => Type::string(),
                         'quantity' => Type::nonNull(Type::int()),
                     ],
-                    'resolve' => function($root, $args) use ($orderItemService) {
+                    'resolve' => function($root, $args) use ($services) {
                         $orderItem = new OrderItem(
                             null,
                             $args['order_id'],
@@ -45,7 +40,7 @@ class MutationType extends ObjectType {
                             $args['attribute_item_id'] ?? null,
                             $args['quantity']
                         );
-                        return $orderItemService->createOrderItem($orderItem);
+                        return $services['orderItemService']->createOrderItem($orderItem);
                     }
                 ],
             ]
