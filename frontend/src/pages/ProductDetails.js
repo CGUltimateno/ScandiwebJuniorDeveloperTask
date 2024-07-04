@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { addToCart } from "../redux/actions/cartActions";
@@ -14,7 +14,9 @@ import { connect } from "react-redux";
 import './ProductDetails.css';
 import parse from 'html-react-parser';
 
-const useProductDetails = (productId) => {
+function ProductDetails({ addToCart }) {
+    const { productId } = useParams();
+
     const { loading: productLoading, error: productError, data: productData } = useQuery(GET_PRODUCT, { variables: { id: productId } });
     const { loading: attributesLoading, error: attributesError, data: attributesData } = useQuery(GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID, { variables: { productId } });
     const { loading: attributeItemsLoading, error: attributeItemsError, data: attributeItemsData } = useQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID, { variables: { productId } });
@@ -22,104 +24,48 @@ const useProductDetails = (productId) => {
     const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICE_BY_PRODUCT_ID, { variables: { productId } });
     const { loading: currencyLoading, error: currencyError, data: currencyData } = useQuery(GET_CURRENCY);
 
-    return {
-        productLoading, productError, productData,
-        attributesLoading, attributesError, attributesData,
-        attributeItemsLoading, attributeItemsError, attributeItemsData,
-        galleryLoading, galleryError, galleryData,
-        pricesLoading, pricesError, pricesData,
-        currencyLoading, currencyError, currencyData
-    };
-};
-
-const processProductDetails = (productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData) => {
-    if (!productData || !attributesData || !attributeItemsData || !galleryData || !pricesData || !currencyData) return null;
-
-    const product = productData.product || {};
-    const attributes = attributesData.attributesByProductId || [];
-    const attributeItems = attributeItemsData.attributeItemsByProductId || [];
-    const gallery = galleryData.galleriesByProductId || [];
-    const prices = pricesData.pricesByProductId || [];
-    const currencyMap = (currencyData.currencies || []).reduce((acc, curr) => {
-        acc[curr.id] = curr;
-        return acc;
-    }, {});
-    const uniqueAttributeItems = attributeItems.reduce((acc, item) => {
-        const key = `${item.attribute_id}-${item.value}`;
-        if (!acc[key]) {
-            acc[key] = item;
-        }
-        return acc;
-    }, {});
-    const groupedAttributes = attributes.map(attr => ({
-        ...attr,
-        items: Object.values(uniqueAttributeItems).filter(item => item.attribute_id === attr.id)
-    }));
-
-    return {
-        ...product,
-        attributes: groupedAttributes,
-        gallery,
-        prices: prices.map(price => ({
-            ...price,
-            currency: currencyMap[price.currency_id]
-        }))
-    };
-};
-
-function ProductDetails({ addToCart }) {
-    const { productId } = useParams();
-    const {
-        productLoading, productError, productData,
-        attributesLoading, attributesError, attributesData,
-        attributeItemsLoading, attributeItemsError, attributeItemsData,
-        galleryLoading, galleryError, galleryData,
-        pricesLoading, pricesError, pricesData,
-        currencyLoading, currencyError, currencyData
-    } = useProductDetails(productId);
-
     const [selectedAttributes, setSelectedAttributes] = useState({});
+    const [productDetails, setProductDetails] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
 
-    const productDetails = useMemo(() => processProductDetails(
-        productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData
-    ), [productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData]);
-
     useEffect(() => {
-        if (productDetails && productDetails.gallery.length > 0) {
-            setSelectedImage(productDetails.gallery[0].image_url);
+        if (productData && attributesData && attributeItemsData && galleryData && pricesData && currencyData) {
+            const product = productData.product || {};
+            const attributes = attributesData.attributesByProductId || [];
+            const attributeItems = attributeItemsData.attributeItemsByProductId || [];
+            const gallery = galleryData.galleriesByProductId || [];
+            const prices = pricesData.pricesByProductId || [];
+            const currencyMap = (currencyData.currencies || []).reduce((acc, curr) => {
+                acc[curr.id] = curr;
+                return acc;
+            }, {});
+            const uniqueAttributeItems = attributeItems.reduce((acc, item) => {
+                const key = `${item.attribute_id}-${item.value}`;
+                if (!acc[key]) {
+                    acc[key] = item;
+                }
+                return acc;
+            }, {});
+            const groupedAttributes = attributes.map(attr => ({
+                ...attr,
+                items: Object.values(uniqueAttributeItems).filter(item => item.attribute_id === attr.id)
+            }));
+
+            setProductDetails({
+                ...product,
+                attributes: groupedAttributes,
+                gallery,
+                prices: prices.map(price => ({
+                    ...price,
+                    currency: currencyMap[price.currency_id]
+                }))
+            });
+
+            if (gallery.length > 0) {
+                setSelectedImage(gallery[0].image_url);
+            }
         }
-    }, [productDetails]);
-
-    const handleAttributeChange = (attributeId, value) => {
-        setSelectedAttributes((prevSelectedAttributes) => ({
-            ...prevSelectedAttributes,
-            [attributeId]: value,
-        }));
-    };
-
-    const isAddToCartDisabled = useMemo(() => productDetails && productDetails.attributes.some(
-        (attr) => !selectedAttributes[attr.id]
-    ) || productDetails && productDetails.in_stock === false, [productDetails, selectedAttributes]);
-
-    const handleAddToCart = useCallback(() => {
-        if (!productDetails) return;
-        const attributesWithSelection = productDetails.attributes.flatMap(attr => (
-            attr.items.map(item => ({
-                ...item,
-                selected: selectedAttributes[attr.id] === item.value
-            }))
-        ));
-        addToCart({
-            id: productDetails.id,
-            name: productDetails.name,
-            price: productDetails.prices[0].amount,
-            currency: productDetails.prices[0].currency.symbol,
-            image: productDetails.gallery[0]?.image_url,
-            quantity: 1,
-            attributes: attributesWithSelection
-        });
-    }, [addToCart, productDetails, selectedAttributes]);
+    }, [productData, attributesData, attributeItemsData, galleryData, pricesData, currencyData, productId]);
 
     if (productLoading || attributesLoading || attributeItemsLoading || galleryLoading || pricesLoading || currencyLoading) {
         return <p>Loading...</p>;
@@ -130,11 +76,22 @@ function ProductDetails({ addToCart }) {
         return <p>Error :(</p>;
     }
 
-    if (!productDetails || !productDetails.attributes) {
+    const product = productDetails;
+
+    if (!product || !product.attributes) {
         return <p>Product not found.</p>;
     }
 
-    const product = productDetails;
+    const handleAttributeChange = (attributeId, value) => {
+        setSelectedAttributes((prevSelectedAttributes) => ({
+            ...prevSelectedAttributes,
+            [attributeId]: value,
+        }));
+    };
+
+    const isAddToCartDisabled = product.attributes.some(
+        (attr) => !selectedAttributes[attr.id]
+    ) || product.in_stock === false;
 
     function toKebabCase(str) {
         return str.replace(/\s+/g, '-').toLowerCase();
@@ -222,7 +179,23 @@ function ProductDetails({ addToCart }) {
                     </p>
                 </div>
                 <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`}
-                        onClick={handleAddToCart}
+                        onClick={() => {
+                            const attributesWithSelection = product.attributes.flatMap(attr => (
+                                attr.items.map(item => ({
+                                    ...item,
+                                    selected: selectedAttributes[attr.id] === item.value
+                                }))
+                            ));
+                            addToCart({
+                                id: product.id,
+                                name: product.name,
+                                price: product.prices[0].amount,
+                                currency: product.prices[0].currency.symbol,
+                                image: product.gallery[0]?.image_url,
+                                quantity: 1,
+                                attributes: attributesWithSelection
+                            });
+                        }}
                         data-testid="add-to-cart"
                         disabled={isAddToCartDisabled}>
                     ADD TO CART

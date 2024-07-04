@@ -45,6 +45,11 @@ const Header = () => {
                     </Link>
                 ))}
             </nav>
+            <div className='logo-container'>
+                <Link to='/'>
+                    <img src={logo} alt='logo' className="logo" />
+                </Link>
+            </div>
             <div className="cart-container">
                 <button className="cart-btn" onClick={() => setIsCartOpen(!isCartOpen)} data-testid="cart-btn">
                     <FontAwesomeIcon icon={faShoppingCart} />
