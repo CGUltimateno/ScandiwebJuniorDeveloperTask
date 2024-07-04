@@ -17,21 +17,11 @@ import parse from 'html-react-parser';
 function ProductDetails({ addToCart }) {
     const { productId } = useParams();
 
-    const { loading: productLoading, error: productError, data: productData } = useQuery(GET_PRODUCT, {
-        variables: { id: productId },
-    });
-    const { loading: attributesLoading, error: attributesError, data: attributesData } = useQuery(GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID, {
-        variables: { productId },
-    });
-    const { loading: attributeItemsLoading, error: attributeItemsError, data: attributeItemsData } = useQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID, {
-        variables: { productId },
-    });
-    const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES_BY_PRODUCT_ID, {
-        variables: { productId },
-    });
-    const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICE_BY_PRODUCT_ID, {
-        variables: { productId },
-    });
+    const { loading: productLoading, error: productError, data: productData } = useQuery(GET_PRODUCT, { variables: { id: productId } });
+    const { loading: attributesLoading, error: attributesError, data: attributesData } = useQuery(GET_PRODUCT_ATTRIBUTES_BY_PRODUCT_ID, { variables: { productId } });
+    const { loading: attributeItemsLoading, error: attributeItemsError, data: attributeItemsData } = useQuery(GET_PRODUCT_ATTRIBUTE_ITEMS_BY_PRODUCT_ID, { variables: { productId } });
+    const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES_BY_PRODUCT_ID, { variables: { productId } });
+    const { loading: pricesLoading, error: pricesError, data: pricesData } = useQuery(GET_PRICE_BY_PRODUCT_ID, { variables: { productId } });
     const { loading: currencyLoading, error: currencyError, data: currencyData } = useQuery(GET_CURRENCY);
 
     const [selectedAttributes, setSelectedAttributes] = useState({});
