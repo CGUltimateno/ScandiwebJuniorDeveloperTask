@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
     GET_PRODUCTS,
@@ -27,6 +27,11 @@ export function ProductList({ effectiveCategoryName }) {
 
     useEffect(() => {
         if (productsData && galleryData && pricesData && currencyData) {
+            console.log('Products Data:', productsData);
+            console.log('Gallery Data:', galleryData);
+            console.log('Prices Data:', pricesData);
+            console.log('Currency Data:', currencyData);
+
             const mergedProducts = productsData.products.map(product => {
                 const productImages = galleryData.galleries.filter(image => image.product_id === product.id);
                 const productPrice = pricesData.prices.find(price => price.product_id === product.id);
@@ -105,9 +110,9 @@ export function ProductList({ effectiveCategoryName }) {
                             </button>
                         )}
                     </div>
-                    <div className='product-info'>
+                    <div className='product-info' data-testid={`product-${toKebabCase(product.name)}`}>
                         <Link to={`/product/${product.id}`}>
-                            <h3 className="product-name">{product.name}</h3>
+                            <h3 className="product-name" data-testid={`product-${toKebabCase((product.name))}`}>{product.name}</h3>
                             <p className="product-price">{`${product.currency} ${product.price}`}</p>
                         </Link>
                     </div>
