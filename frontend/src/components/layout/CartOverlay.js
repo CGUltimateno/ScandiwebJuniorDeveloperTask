@@ -25,7 +25,6 @@ const CartOverlay = ({ onClose }) => {
         if (item.quantity > 1) {
             dispatch(decrementItem(id));
         } else {
-            // Adjusted to pass both id and attributes for the removeItem action
             dispatch(removeItem({id, attributes}));
         }
     };
