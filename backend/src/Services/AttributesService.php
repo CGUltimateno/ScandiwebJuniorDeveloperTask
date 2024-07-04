@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Attributes;
+use App\Models\Attributes\Attributes;
 use App\Repositories\AttributesRepository;
 use App\Services\Interfaces\AttributeServiceInterface;
 

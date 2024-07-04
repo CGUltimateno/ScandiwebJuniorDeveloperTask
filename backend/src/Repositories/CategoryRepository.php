@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Repositories\RepositoryInterface;
 use App\config\Database;
-use App\Models\Category;
+use App\Models\Categories\Category;
 
 class CategoryRepository implements RepositoryInterface
 {
