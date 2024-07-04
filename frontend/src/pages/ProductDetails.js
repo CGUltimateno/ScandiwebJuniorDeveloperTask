@@ -91,6 +91,36 @@ function ProductDetails({ addToCart }) {
         }
     }, [productDetails]);
 
+    const handleAttributeChange = (attributeId, value) => {
+        setSelectedAttributes((prevSelectedAttributes) => ({
+            ...prevSelectedAttributes,
+            [attributeId]: value,
+        }));
+    };
+
+    const isAddToCartDisabled = useMemo(() => productDetails && productDetails.attributes.some(
+        (attr) => !selectedAttributes[attr.id]
+    ) || productDetails && productDetails.in_stock === false, [productDetails, selectedAttributes]);
+
+    const handleAddToCart = useCallback(() => {
+        if (!productDetails) return;
+        const attributesWithSelection = productDetails.attributes.flatMap(attr => (
+            attr.items.map(item => ({
+                ...item,
+                selected: selectedAttributes[attr.id] === item.value
+            }))
+        ));
+        addToCart({
+            id: productDetails.id,
+            name: productDetails.name,
+            price: productDetails.prices[0].amount,
+            currency: productDetails.prices[0].currency.symbol,
+            image: productDetails.gallery[0]?.image_url,
+            quantity: 1,
+            attributes: attributesWithSelection
+        });
+    }, [addToCart, productDetails, selectedAttributes]);
+
     if (productLoading || attributesLoading || attributeItemsLoading || galleryLoading || pricesLoading || currencyLoading) {
         return <p>Loading...</p>;
     }
@@ -100,40 +130,11 @@ function ProductDetails({ addToCart }) {
         return <p>Error :(</p>;
     }
 
-    const product = productDetails;
-
-    if (!product || !product.attributes) {
+    if (!productDetails || !productDetails.attributes) {
         return <p>Product not found.</p>;
     }
 
-    const handleAttributeChange = (attributeId, value) => {
-        setSelectedAttributes((prevSelectedAttributes) => ({
-            ...prevSelectedAttributes,
-            [attributeId]: value,
-        }));
-    };
-
-    const isAddToCartDisabled = useMemo(() => product.attributes.some(
-        (attr) => !selectedAttributes[attr.id]
-    ) || product.in_stock === false, [product.attributes, selectedAttributes, product.in_stock]);
-
-    const handleAddToCart = useCallback(() => {
-        const attributesWithSelection = product.attributes.flatMap(attr => (
-            attr.items.map(item => ({
-                ...item,
-                selected: selectedAttributes[attr.id] === item.value
-            }))
-        ));
-        addToCart({
-            id: product.id,
-            name: product.name,
-            price: product.prices[0].amount,
-            currency: product.prices[0].currency.symbol,
-            image: product.gallery[0]?.image_url,
-            quantity: 1,
-            attributes: attributesWithSelection
-        });
-    }, [addToCart, product, selectedAttributes]);
+    const product = productDetails;
 
     function toKebabCase(str) {
         return str.replace(/\s+/g, '-').toLowerCase();

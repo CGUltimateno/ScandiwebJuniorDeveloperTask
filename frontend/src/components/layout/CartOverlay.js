@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { incrementItem, decrementItem, removeItem, clearCart } from '../../redux/actions/cartActions';
@@ -8,13 +8,18 @@ import { CREATE_ORDER, CREATE_ORDER_ITEM } from '../../graphql/queries';
 const CartOverlay = ({ onClose }) => {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
-    const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
-    const [cartIsOpen, setCartIsOpen] = useState(true);
-    const totalItems = cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0);
+
+    const totalAmount = useMemo(() => (
+        cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)
+    ), [cartItems]);
+
+    const totalItems = useMemo(() => (
+        cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0)
+    ), [cartItems]);
+
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
-    useEffect(() => {
-    }, [cartItems, totalItems]);
+
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
     };
@@ -29,7 +34,6 @@ const CartOverlay = ({ onClose }) => {
     };
 
     const handleClose = () => {
-        setCartIsOpen(false);
         onClose();
     };
 
@@ -85,7 +89,7 @@ const CartOverlay = ({ onClose }) => {
 
     return (
         <>
-            {cartIsOpen && <div className={styles.overlay} onClick={handleClose}></div>}
+            <div className={styles.overlay} onClick={handleClose}></div>
             <div className={styles.cartOverlay} data-testid="cart-overlay">
                 <div className={styles.cartHeader}>
                     <div className={styles.cartTitleContainer}>
@@ -121,8 +125,8 @@ const CartOverlay = ({ onClose }) => {
                                                                   className={`${key === "Color" ? styles.colorSwatch : styles.attributeOption} ${selectedOption?.value === option.value ? styles.selected : ""}`}
                                                                   style={key === "Color" ? {backgroundColor: option.value} : {}}
                                                                   data-testid={`cart-item-attribute-${kebabCaseKey}-${option.display_value.replace(/ /g, '-')}${selectedOption?.value === option.value ? '-selected' : ''}`}>
-                                                          {key !== "Color" && option.value}
-                                                    </span>
+                                                                {key !== "Color" && option.value}
+                                                            </span>
                                                         ))}
                                                     </div>
                                                 </label>
@@ -147,8 +151,7 @@ const CartOverlay = ({ onClose }) => {
                 <div className={styles.cartFooter}>
                     <div className={styles.cartTotal} data-testid='cart-total'>
                         <span>Total</span>
-                        <span
-                            className={styles.cartTotalPrice}>{`${cartItems.length > 0 ? cartItems[0].currency : '$'} ${totalAmount}`}</span>
+                        <span className={styles.cartTotalPrice}>{`${cartItems.length > 0 ? cartItems[0].currency : '$'} ${totalAmount}`}</span>
                     </div>
                     <button className={`${styles.placeOrderBtn} your-new-class`} disabled={cartItems.length === 0}
                             onClick={handlePlaceOrder} data-testid="place-order-btn">
