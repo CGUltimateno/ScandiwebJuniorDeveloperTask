@@ -25,13 +25,16 @@
 }
 
 .product-card {
-    width: 100%;
+    width: 80%;
     height: 100%;
     position: relative;
-    padding: 5px;
     text-align: center;
     background-color: #fff;
     transition: box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns children to the left */
+
 }
 
 .product-card:hover {
@@ -54,10 +57,8 @@
 }
 
 .product-info {
-    margin-top: 16px;
-    margin-left: 60px;
     text-align: left;
-    border: none;
+    margin-left: 40px;
 }
 
 .product-name {

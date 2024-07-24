@@ -5,7 +5,7 @@ import { GET_CATEGORIES } from '../graphql/queries';
 import ProductList from '../components/product/ProductList';
 import './ProductsPage.css';
 
-const ProductsPage = () => {
+const ProductsPage = ({ setIsCartOpen }) => {
     const { CategoryName } = useParams();
     const effectiveCategoryName = CategoryName || 'all';
     const { loading, error, data } = useQuery(GET_CATEGORIES);
@@ -20,7 +20,7 @@ const ProductsPage = () => {
     return (
         <div>
             <h2 className="h2">{TopName}</h2>
-            <ProductList effectiveCategoryName={effectiveCategoryName} />
+            <ProductList effectiveCategoryName={effectiveCategoryName} setIsCartOpen={setIsCartOpen} />
         </div>
     );
 }

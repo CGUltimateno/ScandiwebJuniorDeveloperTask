@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { incrementItem, decrementItem, removeItem, clearCart } from '../../redux/actions/cartActions';
+import { incrementItem, decrementItem, removeItem, clearCart, hideCart, addToCart } from '../../redux/actions/cartActions';
 import styles from './CartOverlay.module.css';
 import { CREATE_ORDER, CREATE_ORDER_ITEM } from '../../graphql/queries';
 
@@ -9,12 +9,15 @@ const CartOverlay = ({ onClose }) => {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
     const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
-    const [cartIsOpen, setCartIsOpen] = useState(true);
-    const totalItems = cartItems.reduce((total, currentItem) => total + currentItem.quantity, 0);
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
+
     useEffect(() => {
-    }, [cartItems, totalItems]);
+        const savedCartItems = JSON.parse(localStorage.getItem('cartItems'));
+        if (savedCartItems) {
+            savedCartItems.forEach(item => dispatch(addToCart(item)));
+        }
+    }, [dispatch]);
 
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));
@@ -25,12 +28,12 @@ const CartOverlay = ({ onClose }) => {
         if (item.quantity > 1) {
             dispatch(decrementItem(id));
         } else {
-            dispatch(removeItem({id, attributes}));
+            dispatch(removeItem({ id, attributes }));
         }
     };
 
     const handleClose = () => {
-        setCartIsOpen(false);
+        dispatch(hideCart());
         onClose();
     };
 
@@ -86,12 +89,12 @@ const CartOverlay = ({ onClose }) => {
 
     return (
         <>
-            {cartIsOpen && <div className={styles.overlay} onClick={handleClose}></div>}
+            <div className={styles.overlay} onClick={handleClose}></div>
             <div className={styles.cartOverlay} data-testid="cart-overlay">
                 <div className={styles.cartHeader}>
                     <div className={styles.cartTitleContainer}>
                         <h2 className={styles.cartTitle}>My Bag,</h2>
-                        <h2 className={styles.CartCount}>{`${totalItems} ${totalItems === 1 ? 'item' : 'items'}`}</h2>
+                        <h2 className={styles.CartCount}>{`${cartItems.length} ${cartItems.length === 1 ? 'item' : 'items'}`}</h2>
                     </div>
                     <button onClick={handleClose} className={styles.closeBtn}>&times;</button>
                 </div>
@@ -111,7 +114,7 @@ const CartOverlay = ({ onClose }) => {
                                         const kebabCaseKey = key.toLowerCase().replace(/ /g, '-');
                                         return (
                                             <div className={styles.cartItemAttribute} key={key}
-                                                 style={{marginBottom: isLastAttribute ? 'auto' : ''}}
+                                                 style={{ marginBottom: isLastAttribute ? 'auto' : '' }}
                                                  data-testid={`cart-item-attribute-${kebabCaseKey}`}>
                                                 <label className={styles.labelTitle}>
                                                     {key}:
@@ -120,7 +123,7 @@ const CartOverlay = ({ onClose }) => {
                                                         {groupedAttributes[key].map((option) => (
                                                             <span key={`${option.attribute_id}-${option.value}`}
                                                                   className={`${key === "Color" ? styles.colorSwatch : styles.attributeOption} ${selectedOption?.value === option.value ? styles.selected : ""}`}
-                                                                  style={key === "Color" ? {backgroundColor: option.value} : {}}
+                                                                  style={key === "Color" ? { backgroundColor: option.value } : {}}
                                                                   data-testid={`cart-item-attribute-${kebabCaseKey}-${option.display_value.replace(/ /g, '-')}${selectedOption?.value === option.value ? '-selected' : ''}`}>
                                                           {key !== "Color" && option.value}
                                                     </span>
@@ -140,7 +143,7 @@ const CartOverlay = ({ onClose }) => {
                                             data-testid='cart-item-amount-decrease'>-
                                     </button>
                                 </div>
-                                <img src={item.image} alt={item.name} className={styles.cartItemImage}/>
+                                <img src={item.image} alt={item.name} className={styles.cartItemImage} />
                             </div>
                         );
                     })}
@@ -149,12 +152,12 @@ const CartOverlay = ({ onClose }) => {
                     <div className={styles.cartTotal} data-testid='cart-total'>
                         <span>Total</span>
                         <span
-                            className={styles.cartTotalPrice}>{`${cartItems.length > 0 ? cartItems[0].currency : '$'} ${totalAmount}`}</span>
+                            className={styles.cartTotalPrice}>{`${new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD'
+                        }).format(totalAmount)}`}</span>
                     </div>
-                    <button className={`${styles.placeOrderBtn} your-new-class`} disabled={cartItems.length === 0}
-                            onClick={handlePlaceOrder} data-testid="place-order-btn">
-                        PLACE ORDER
-                    </button>
+                    <button onClick={handlePlaceOrder} className={styles.placeOrderBtn} data-testid='place-order-button'>Order</button>
                 </div>
             </div>
         </>

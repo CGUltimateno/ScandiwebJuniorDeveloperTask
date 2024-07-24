@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import './ProductDetails.css';
 import parse from 'html-react-parser';
 
-function ProductDetails({ addToCart }) {
+function ProductDetails({ addToCart, openCartOverlay }) {
     const { productId } = useParams();
 
     const { loading: productLoading, error: productError, data: productData } = useQuery(GET_PRODUCT, { variables: { id: productId } });
@@ -83,10 +83,12 @@ function ProductDetails({ addToCart }) {
     }
 
     const handleAttributeChange = (attributeId, value) => {
-        setSelectedAttributes((prevSelectedAttributes) => ({
-            ...prevSelectedAttributes,
-            [attributeId]: value,
-        }));
+        if (product.in_stock) {
+            setSelectedAttributes((prevSelectedAttributes) => ({
+                ...prevSelectedAttributes,
+                [attributeId]: value,
+            }));
+        }
     };
 
     const isAddToCartDisabled = product.attributes.some(
@@ -96,6 +98,25 @@ function ProductDetails({ addToCart }) {
     function toKebabCase(str) {
         return str.replace(/\s+/g, '-').toLowerCase();
     }
+
+    const handleAddToCart = () => {
+        const attributesWithSelection = product.attributes.flatMap(attr => (
+            attr.items.map(item => ({
+                ...item,
+                selected: selectedAttributes[attr.id] === item.value
+            }))
+        ));
+        addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.prices[0].amount,
+            currency: product.prices[0].currency.symbol,
+            image: product.gallery[0]?.image_url,
+            quantity: 1,
+            attributes: attributesWithSelection
+        });
+        openCartOverlay();
+    };
 
     return (
         <div className="product-details" data-testid={`product-${toKebabCase(product.name)}`}>
@@ -116,11 +137,12 @@ function ProductDetails({ addToCart }) {
                                         (img) => img.image_url === selectedImage
                                     );
                                     const newIndex =
-                                        (currentIndex + 1) % product.gallery.length;
+                                        (currentIndex - 1 + product.gallery.length) %
+                                        product.gallery.length;
                                     setSelectedImage(product.gallery[newIndex].image_url);
                                 }}
                             >
-                                {">"}
+                                {"<"}
                             </button>
                             <button
                                 onClick={() => {
@@ -128,12 +150,11 @@ function ProductDetails({ addToCart }) {
                                         (img) => img.image_url === selectedImage
                                     );
                                     const newIndex =
-                                        (currentIndex - 1 + product.gallery.length) %
-                                        product.gallery.length;
+                                        (currentIndex + 1) % product.gallery.length;
                                     setSelectedImage(product.gallery[newIndex].image_url);
                                 }}
                             >
-                                {"<"}
+                                {">"}
                             </button>
                         </div>
                     )}
@@ -155,9 +176,10 @@ function ProductDetails({ addToCart }) {
                                     const isSelected = selectedAttributes[attribute.id] === item.value;
                                     return (
                                         <button key={item.value}
-                                                className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""}`}
+                                                className={`attribute-option${attribute.type === "swatch" ? " color-option" : ""} ${isSelected ? "selected" : ""} ${!product.in_stock ? "disabled" : ""}`}
                                                 onClick={() => handleAttributeChange(attribute.id, item.value)}
-                                                data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}>
+                                                data-testid={`product-attribute-${toKebabCase(attribute.name)}-${(item.display_value)}${isSelected ? '-selected' : ''}`}
+                                                disabled={!product.in_stock}>
                                             {attribute.type === "swatch" ? (
                                                 <span className="color-swatch swatch"
                                                       style={{backgroundColor: item.value}}
@@ -179,23 +201,7 @@ function ProductDetails({ addToCart }) {
                     </p>
                 </div>
                 <button className={`add-to-cart ${isAddToCartDisabled ? 'disabled' : ''}`}
-                        onClick={() => {
-                            const attributesWithSelection = product.attributes.flatMap(attr => (
-                                attr.items.map(item => ({
-                                    ...item,
-                                    selected: selectedAttributes[attr.id] === item.value
-                                }))
-                            ));
-                            addToCart({
-                                id: product.id,
-                                name: product.name,
-                                price: product.prices[0].amount,
-                                currency: product.prices[0].currency.symbol,
-                                image: product.gallery[0]?.image_url,
-                                quantity: 1,
-                                attributes: attributesWithSelection
-                            });
-                        }}
+                        onClick={handleAddToCart}
                         data-testid="add-to-cart"
                         disabled={isAddToCartDisabled}>
                     ADD TO CART

@@ -3,8 +3,11 @@ export const INCREMENT_ITEM = 'INCREMENT_ITEM';
 export const DECREMENT_ITEM = 'DECREMENT_ITEM';
 export const REMOVE_ITEM = 'REMOVE_ITEM';
 export const CLEAR_CART = 'CLEAR_CART';
+export const HIDE_CART = 'HIDE_CART';
 
-export const CREATE_ORDER = 'CREATE_ORDER';
+export const hideCart = () => ({
+    type: HIDE_CART,
+});
 
 export const addToCart = (item) => ({
     type: ADD_TO_CART,

@@ -12,6 +12,7 @@ use App\GraphQL\Types\OrderItemType;
 use App\GraphQL\Types\OrderType;
 use App\GraphQL\Types\PriceType;
 use App\GraphQL\Types\ProductType;
+use GraphQL\GraphQL as GraphQLBase;
 use App\Repositories\AttributesItemRepository;
 use App\Repositories\AttributesRepository;
 use App\Repositories\CategoryRepository;
@@ -90,13 +91,19 @@ class GraphQL {
             }
 
 
+            error_log("Raw input: " . $rawInput, 3, 'error.log');
+
             $input = json_decode($rawInput, true);
+            error_log("Decoded input: " . print_r($input, true), 3, 'error.log');
 
             $query = $input['query'];
             $variableValues = $input['variables'] ?? null;
 
+            error_log("Query: " . $query, 3, 'error.log');
+            error_log("Variable values: " . print_r($variableValues, true), 3, 'error.log');
 
-            $result = \GraphQL\GraphQL::executeQuery($schema, $query, null, null, $variableValues);
+            $result = GraphQLBase::executeQuery($schema, $query, null, null, $variableValues);
+            error_log("Execution result: " . print_r($result, true), 3, 'error.log');
 
             $output = $result->toArray();
         } catch (Throwable $e) {

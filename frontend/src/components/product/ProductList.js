@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     GET_PRODUCTS,
     GET_GALLERY_IMAGES,
@@ -15,7 +15,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { addToCart } from '../../redux/actions/cartActions';
 import './ProductList.css';
 
-export function ProductList({ effectiveCategoryName }) {
+export function ProductList({ effectiveCategoryName, setIsCartOpen }) {
     const dispatch = useDispatch();
     const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
     const { loading: galleryLoading, error: galleryError, data: galleryData } = useQuery(GET_GALLERY_IMAGES);
@@ -43,6 +43,11 @@ export function ProductList({ effectiveCategoryName }) {
         }
     }, [productsLoading, galleryLoading, pricesLoading, productsData, galleryData, pricesData, currencyData]);
 
+    useEffect(() => {
+        const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+        savedCart.forEach(item => dispatch(addToCart(item)));
+    }, [dispatch]);
+
     if (productsLoading || galleryLoading || pricesLoading) return <p>Loading...</p>;
     if (productsError || galleryError || pricesError) {
         console.error(productsError?.graphQLErrors, galleryError?.graphQLErrors, pricesError?.graphQLErrors);
@@ -55,6 +60,7 @@ export function ProductList({ effectiveCategoryName }) {
 
     const handleAddToCart = async (product) => {
         const { data } = await getProductAttributes({ variables: { productId: product.id } });
+        let selectedAttributes = [];
         if (data && data.attributeItemsByProductId) {
             const attributes = data.attributeItemsByProductId;
             const groupedAttributes = attributes.reduce((acc, attr) => {
@@ -64,30 +70,29 @@ export function ProductList({ effectiveCategoryName }) {
                 acc[attr.attribute_id].push(attr);
                 return acc;
             }, {});
-            const selectedAttributes = Object.values(groupedAttributes).map(attrs => attrs.map((attr, index) => ({
+            selectedAttributes = Object.values(groupedAttributes).map(attrs => attrs.map((attr, index) => ({
                 ...attr,
                 selected: index === 0
             }))).flat();
-            dispatch(addToCart({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                currency: product.currency,
-                image: product.gallery[0]?.image_url,
-                quantity: 1,
-                attributes: selectedAttributes
-            }));
-        } else {
-            dispatch(addToCart({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                currency: product.currency,
-                image: product.gallery[0]?.image_url,
-                quantity: 1,
-                attributes: []
-            }));
         }
+
+        const cartItem = {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            currency: product.currency,
+            image: product.gallery[0]?.image_url,
+            quantity: 1,
+            attributes: selectedAttributes
+        };
+
+        dispatch(addToCart(cartItem));
+        setIsCartOpen(true);
+
+        // Save cart to localStorage
+        const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        currentCart.push(cartItem);
+        localStorage.setItem('cart', JSON.stringify(currentCart));
     };
 
     function toKebabCase(str) {
