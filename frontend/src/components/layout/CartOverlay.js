@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { incrementItem, decrementItem, removeItem, clearCart, hideCart, addToCart } from '../../redux/actions/cartActions';
+import { incrementItem, decrementItem, removeItem, clearCart, hideCart } from '../../redux/actions/cartActions';
 import styles from './CartOverlay.module.css';
 import { CREATE_ORDER, CREATE_ORDER_ITEM } from '../../graphql/queries';
 
@@ -11,13 +11,6 @@ const CartOverlay = ({ onClose }) => {
     const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
     const [createOrder] = useMutation(CREATE_ORDER);
     const [createOrderItem] = useMutation(CREATE_ORDER_ITEM);
-
-    useEffect(() => {
-        const savedCartItems = JSON.parse(localStorage.getItem('cartItems'));
-        if (savedCartItems) {
-            savedCartItems.forEach(item => dispatch(addToCart(item)));
-        }
-    }, [dispatch]);
 
     const handleIncrement = (id) => {
         dispatch(incrementItem(id));

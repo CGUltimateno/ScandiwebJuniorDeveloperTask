@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
     GET_PRODUCTS,
     GET_GALLERY_IMAGES,
@@ -43,11 +43,6 @@ export function ProductList({ effectiveCategoryName, setIsCartOpen }) {
         }
     }, [productsLoading, galleryLoading, pricesLoading, productsData, galleryData, pricesData, currencyData]);
 
-    useEffect(() => {
-        const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        savedCart.forEach(item => dispatch(addToCart(item)));
-    }, [dispatch]);
-
     if (productsLoading || galleryLoading || pricesLoading) return <p>Loading...</p>;
     if (productsError || galleryError || pricesError) {
         console.error(productsError?.graphQLErrors, galleryError?.graphQLErrors, pricesError?.graphQLErrors);
@@ -88,11 +83,6 @@ export function ProductList({ effectiveCategoryName, setIsCartOpen }) {
 
         dispatch(addToCart(cartItem));
         setIsCartOpen(true);
-
-        // Save cart to localStorage
-        const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-        currentCart.push(cartItem);
-        localStorage.setItem('cart', JSON.stringify(currentCart));
     };
 
     function toKebabCase(str) {

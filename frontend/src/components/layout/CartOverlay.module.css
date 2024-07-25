@@ -1,23 +1,22 @@
 .overlay {
     position: fixed;
-    top: 60px;
+    top: 75px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 60px);
     background: rgba(0, 0, 0, 0.5);
     z-index: 10;
 }
-
 
 .cartOverlay {
     position: fixed;
     top: 60px;
     right: 120px;
-    width: 30%;
+    width: 25%;
     background: white;
     z-index: 20;
     overflow-y: auto;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -51,23 +50,32 @@
 .cartItem {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 .cartItemDetails {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
+    width: 100%;
+}
+
+.cartItemTitle {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
 }
 
 .cartItemTitle h3 {
-    align-items: flex-start;
-    font-weight: lighter;
+    margin: 0;
+    font-weight: normal;
+    font-size: 16px;
 }
 
 .cartItemPrice {
     font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px; /* Reduced margin */
 }
 
 .cartItemAttribute {
@@ -85,6 +93,7 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .colorSwatch.selected {
@@ -116,24 +125,17 @@
     border: 1px solid #000;
 }
 
-.colorSwatch {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    margin-right: 5px;
-    cursor: pointer;
-    position: relative;
-}
-
 .colorSwatch.selected {
     outline: 1px solid #00f086;
     outline-offset: 1px;
 }
+
 .cartItemQuantity {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    margin-left: 10px;
 }
 
 .cartItemQuantity button {
@@ -141,36 +143,42 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
+    font-size: 16px;
+}
+
+.cartItemQuantity span {
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .cartItemImage {
-    width: 100px;
-    height: 100px;
+    width: 30%;
     object-fit: cover;
-    margin-left: 20px;
+    margin-left: 10px; /* Reduced margin */
 }
 
-
 .cartFooter {
-    margin-top: 20px;
+    margin-top: 10px; /* Reduced margin */
 }
 
 .cartTotal {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 .cartTotalPrice {
     font-weight: bold;
 }
+
 .CartCount {
     font-weight: lighter;
 }
 
 .labelTitle {
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
 }
+
 .placeOrderBtn {
     width: 100%;
     padding: 10px;
