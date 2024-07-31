@@ -178,17 +178,15 @@
         margin-bottom: 10px;
     }
 
-    .placeOrderBtn {
-        width: 100%;
-        padding: 10px;
-        background-color: #00de7f;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-    }
 
-    .placeOrderBtn:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
+}
+
+.placeOrderBtn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #00de7f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
 }

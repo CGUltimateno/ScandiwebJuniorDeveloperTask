@@ -150,7 +150,9 @@ const CartOverlay = ({ onClose }) => {
                             currency: 'USD'
                         }).format(totalAmount)}`}</span>
                     </div>
-                    <button onClick={handlePlaceOrder} className={styles.placeOrderBtn} data-testid='place-order-button'>Order</button>
+                    <button onClick={handlePlaceOrder} className={styles.placeOrderBtn}
+                            data-testid='place-order-button'>Order
+                    </button>
                 </div>
             </div>
         </>
